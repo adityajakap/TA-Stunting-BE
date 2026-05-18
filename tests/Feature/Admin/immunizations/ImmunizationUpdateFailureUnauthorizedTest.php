@@ -12,6 +12,12 @@ class ImmunizationUpdateFailureUnauthorizedTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->markTestSkipped('Immunization feature removed');
+    }
+
     public function test_non_admin_user_cannot_update_immunization()
     {
         $orangtua = User::create([

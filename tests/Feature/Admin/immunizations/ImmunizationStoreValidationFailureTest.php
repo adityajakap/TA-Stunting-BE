@@ -11,17 +11,14 @@ class ImmunizationStoreValidationFailureTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_cannot_store_immunization_with_empty_fields()
+    protected function setUp(): void
     {
-        $admin = User::create([
-            'nama_anak' => null,
-            'nik_anak' => '1234567890123456',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-        ]);
+        parent::setUp();
+        $this->markTestSkipped('Immunization feature removed');
+    }
 
-        $response = $this->actingAs($admin)->post('/admin/immunizations', []);
-
-        $response->assertSessionHasErrors('name');
+    public function test_placeholder()
+    {
+        $this->assertTrue(true);
     }
 }

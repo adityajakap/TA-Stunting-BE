@@ -98,8 +98,8 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label for="nik_anak" class="form-label">NIK Anak</label>
-                    <input type="text" name="nik_anak" id="nik_anak" class="form-control">
+                    <label for="nama_anak" class="form-label">Nama Anak</label>
+                    <input type="text" name="nama_anak" id="nama_anak" class="form-control" value="{{ old('nama_anak') }}">
                 </div>
 
                 <div class="mb-3">

@@ -2,37 +2,18 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\User;
-use App\Models\Immunization;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class ImmunizationDeleteSuccessTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_admin_can_delete_immunization()
+    protected function setUp(): void
     {
-        $admin = User::create([
-            'nama_anak' => null,
-            'nik_anak' => '1234567890123456',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-        ]);
+        parent::setUp();
+        $this->markTestSkipped('Immunization feature removed');
+    }
 
-        $immunization = Immunization::create([
-            'name' => 'Campak',
-            'age' => '9 bulan',
-            'description' => 'Deskripsi awal',
-        ]);
-
-        $response = $this->actingAs($admin)->delete("/admin/immunizations/{$immunization->id}");
-
-        $response->assertRedirect(); 
-
-        $this->assertDatabaseMissing('immunizations', [
-            'id' => $immunization->id,
-        ]);
+    public function test_placeholder()
+    {
+        $this->assertTrue(true);
     }
 }

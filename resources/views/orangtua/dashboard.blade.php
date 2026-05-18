@@ -62,87 +62,170 @@
         display: flex;
         gap: 20px;
         padding: 40px 0;
+        justify-content: space-between;
     }
 
     .feature-box {
-    background-color: #005f77;
-    color: white;
-    flex: 1;
-    padding: 20px;
-    border-radius: 12px;
-    transition: 0.2s ease-in-out;
-}
+        background-color: #00a896;
+        color: white;
+        flex: 1;
+        padding: 30px;
+        border-radius: 16px;
+        transition: all 0.3s ease-in-out;
+        text-align: center;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .feature-box:hover {
+        background-color: #008f7f;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 168, 150, 0.3);
+    }
 
     .feature-box h3 {
         color: #ffffff;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 15px 0 10px 0;
     }
 
     .feature-box p {
         color: #f1f1f1;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin: 0;
     }
 
     .icon-feature {
-        font-size: 2rem;
+        font-size: 3rem;
         color: #ffffff;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         display: block;
     }
 
 
-    .menu-grid,
-    .article-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* dari 220px jadi 300px */
-        gap: 28px; /* sedikit lebih besar */
+    .menu-grid {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
         padding-bottom: 40px;
         padding-top: 20px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+
+    .article-grid {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding-bottom: 40px;
+        padding-top: 20px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
     }
 
     .menu-block {
-        background: #f1f1f1;
-        padding: 28px;
+        background: #f8f9fa;
+        padding: 20px;
         border-radius: 16px;
         text-align: center;
-        min-height: 380px; /* 👉 tambah tinggi minimum */
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        width: 280px;
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu-block:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
     .menu-block img {
         width: 100%;
-        height: 200px; /* lebih tinggi */
-        object-fit: contain;
-        border-radius: 10px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 15px;
     }
     
     .article-card {
-        background: white;
-        border: 1px solid #ddd;
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
         border-radius: 16px;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        min-height: 380px; /* 👉 tambah tinggi minimum */
-        justify-content: space-between;
+        min-width: 300px;
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .article-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
 
     .article-card img {
         width: 100%;
-        height: 200px; /* lebih tinggi */
-        object-fit: contain;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 10px;
     }
 
     .article-content {
-        padding: 15px;
+        padding: 20px;
+        text-align: left;
+    }
+
+    .article-content h6 {
+        font-weight: 600;
+        margin: 0 0 10px 0;
+        color: #333;
+        font-size: 1.1rem;
+        line-height: 1.4;
     }
 
     .article-actions {
         display: flex;
         justify-content: space-between;
-        padding: 0 15px 15px;
+        align-items: center;
+        padding: 0 20px 20px;
         font-size: 0.9rem;
-        color: gray;
+        color: #6c757d;
+    }
+
+    .article-actions .views {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .article-actions .views i {
+        color: #005f77;
+    }
+
+    .article-actions a {
+        background: #005f77;
+        color: white;
+        border-radius: 8px;
+        padding: 8px 15px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: inline-block;
+        font-weight: 500;
+    }
+
+    .article-actions a:hover {
+        background: #00485e;
+        transform: translateY(-1px);
     }
 
     .section-header {
@@ -151,6 +234,33 @@
         justify-content: center;
         align-items: center;
         gap: 12px;
+    }
+
+    .section-header h4 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #005f77;
+    }
+
+    .section-header .btn-arrow {
+        background: white;
+        border: 2px solid #00a896;
+        color: #00a896;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .section-header .btn-arrow:hover {
+        background: #00a896;
+        color: white;
+        transform: scale(1.1);
     }
     
     .btn btn-primary {
@@ -169,6 +279,63 @@
 
     .feature-box-link:hover {
         transform: translateY(-6px);
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 5%;
+        top: 40%;
+        bottom: auto;
+        opacity: 1;
+        transition: 0.3s;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: rgba(0, 0, 0, 0.7);
+        background-size: 60% 60%;
+        border-radius: 50%;
+        padding: 10px;
+    }
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        background-color: transparent;
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+
+    #articleCarousel .carousel-control-prev,
+    #articleCarousel .carousel-control-next {
+        width: 5%;
+        top: 40%;
+        bottom: auto;
+        opacity: 1;
+        transition: 0.3s;
+    }
+
+    #articleCarousel .carousel-control-prev-icon,
+    #articleCarousel .carousel-control-next-icon {
+        background-color: rgba(0, 0, 0, 0.7);
+        background-size: 60% 60%;
+        border-radius: 50%;
+        padding: 10px;
+    }
+
+    #articleCarousel .carousel-control-prev:hover,
+    #articleCarousel .carousel-control-next:hover {
+        background-color: transparent;
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        z-index: 10;
+    }
+
+    .carousel {
+        position: relative;
     }
 
     .feature-box {
@@ -202,7 +369,7 @@
 
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.7);
         background-size: 60% 60%;
         border-radius: 50%;
         padding: 10px;
@@ -226,7 +393,7 @@
 
     #articleCarousel .carousel-control-prev-icon,
     #articleCarousel .carousel-control-next-icon {
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.7);
         background-size: 60% 60%;
         border-radius: 50%;
         padding: 10px;
@@ -270,23 +437,23 @@
 
     {{-- FITUR UTAMA --}}
     <div class="feature-grid">
-        <a href="{{ route('orangtua.immunization_records.index') }}" class="feature-box-link">
-            <div class="feature-box">
-                <i class="fas fa-syringe icon-feature"></i>
-                <h3>Immunization</h3>
-                <p>Cek dan pantau riwayat imunisasi anak Anda dengan mudah dan cepat.</p>
-            </div>
-        </a>
         <a href="{{ route('orangtua.detections.create') }}" class="feature-box-link">
             <div class="feature-box">
-                <i class="fas fa-magnifying-glass icon-feature"></i>
+                <i class="fas fa-chart-line icon-feature"></i>
                 <h3>Deteksi</h3>
                 <p>Deteksi stunting pada anak dengan menggunakan metode yang tepat.</p>
             </div>
         </a>
+        <a href="{{ route('orangtua.nutritionUs.index') }}" class="feature-box-link">
+            <div class="feature-box">
+                <i class="fas fa-leaf icon-feature"></i>
+                <h3>Menu</h3>
+                <p>Dapatkan rekomendasi menu bergizi untuk tumbuh kembang anak.</p>
+            </div>
+        </a>
         <a href="{{ route('bmi') }}" class="feature-box-link">
             <div class="feature-box">
-                <i class="fas fa-weight icon-feature"></i>
+                <i class="fas fa-calculator icon-feature"></i>
                 <h3>BMI</h3>
                 <p>Hitung status gizi anak secara cepat dan mudah berdasarkan tinggi dan berat badan.</p>
             </div>
@@ -297,90 +464,52 @@
 
     {{-- TODAY MENU --}}
     <div class="section-header">
-        <h4 class="section-title-feature mb-0">Today Menu’s</h4>
-        <a href="{{ route('orangtua.nutritionUs.index') }}" class="btn btn-sm btn-light border rounded-circle" title="Lihat semua menu">
-            <i class="fas fa-arrow-right text-dark"></i>
-        </a>
+        <h4 class="section-title-feature mb-0">Today Menu's</h4>
     </div>
 
-    <div id="menuCarousel" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
-        <div class="carousel-inner">
-
-            @foreach (collect(['pagi', 'siang', 'malam', 'snack'])->chunk(3) as $chunked)
-                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                    <div class="row">
-                        @foreach ($chunked as $waktu)
-                            @if ($menus[$waktu])
-                                <div class="col-md-4">
-                                    <div class="menu-block mb-4">
-                                        <img src="{{ $menus[$waktu]->image ? asset('storage/' . $menus[$waktu]->image) : asset('default-image.png') }}" alt="Menu" style="width:100%; height:150px; object-fit:contain; border-radius:8px;">
-                                        <h6 class="mt-2">{{ $menus[$waktu]->name }}</h6>
-                                        <small class="text-muted">{{ ucfirst($menus[$waktu]->category) }}</small>
-                                        <div class="mt-2">
-                                            <a href="{{ route('orangtua.nutritionUs.show', $menus[$waktu]->id) }}" 
-                                            style="background:#005f77; color:white; border-radius:8px; padding:8px 18px; text-decoration:none; font-size:0.95rem; display:inline-block;">
-                                                Lihat Menu
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
+    <div class="menu-grid">
+        @php
+            $menuItems = collect(['pagi', 'siang', 'malam', 'snack'])->map(function($waktu) use ($menus) {
+                return $menus[$waktu] ?? null;
+            })->filter()->take(3);
+        @endphp
+        @foreach ($menuItems as $menu)
+            <div class="menu-block">
+                <img src="{{ $menu->image ? asset('storage/' . $menu->image) : asset('default-image.png') }}" alt="Menu">
+                <h6 style="font-weight: 600; margin: 10px 0 5px 0;">{{ $menu->name }}</h6>
+                <small style="color: #6c757d; text-transform: capitalize;">{{ $menu->category }}</small>
+                <div style="margin-top: 15px;">
+                    <a href="{{ route('orangtua.nutritionUs.show', $menu->id) }}" 
+                    style="background:#005f77; color:white; border-radius:8px; padding:10px 20px; text-decoration:none; font-size:0.9rem; display:inline-block; font-weight: 500;">
+                        Lihat Menu
+                    </a>
                 </div>
-            @endforeach
-
-        </div>
-
-        {{-- Navigasi Carousel --}}
-        <button class="carousel-control-prev" type="button" data-bs-target="#menuCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#menuCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
+            </div>
+        @endforeach
     </div>
 
 
     {{-- ARTICLES --}}
     <div class="section-header">
         <h4 class="section-title-feature mb-0">Articles</h4>
-        <a href="{{ route('orangtua.artikel.index') }}" class="btn btn-sm btn-light border rounded-circle" title="Lihat semua artikel">
-            <i class="fas fa-arrow-right text-dark"></i>
-        </a>
     </div>
 
-    <div id="articleCarousel" class="carousel slide position-relative" data-bs-ride="false" data-bs-interval="false">
-        <div class="carousel-inner">
-            @foreach ($artikels->chunk(3) as $chunkIndex => $chunk)
-                <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
-                    <div class="row">
-                        @foreach ($chunk as $artikel)
-                            <div class="col-md-4">
-                                <div class="article-card mb-4">
-                                    <img src="{{ $artikel->image ? asset('storage/' . $artikel->image) : asset('default-image.png') }}" alt="Artikel" >
-                                    <div class="article-content">
-                                        <p>{{ Str::limit($artikel->title, 80) }}</p>
-                                    </div>
-                                    <div class="article-actions">
-                                        <span>👁 {{ $artikel->views ?? 0 }}</span>
-                                        <a href="{{ route('orangtua.artikel.show', $artikel->id) }}">Read All</a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+    <div class="article-grid">
+        @foreach ($artikels->take(3) as $artikel)
+            <div class="article-card">
+                <img src="{{ $artikel->image ? asset('storage/' . $artikel->image) : asset('default-image.png') }}" alt="Artikel">
+                <div class="article-content">
+                    <h6>{{ Str::limit($artikel->title, 60) }}</h6>
                 </div>
-            @endforeach
-        </div>
-
-        {{-- Tombol Panah --}}
-        <button class="carousel-control-prev" type="button" data-bs-target="#articleCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#articleCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
+                <div class="article-actions">
+                    <div class="views">
+                        <i class="fas fa-eye"></i>
+                        <span>{{ $artikel->views ?? 100 }}</span>
+                    </div>
+                    <a href="{{ route('orangtua.artikel.show', $artikel->id) }}">Read All</a>
+                </div>
+            </div>
+        @endforeach
     </div>
 </div>
 @endsection

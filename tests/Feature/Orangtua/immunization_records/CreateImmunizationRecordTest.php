@@ -12,31 +12,14 @@ class CreateImmunizationRecordTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_orangtua_can_create_immunization_record()
+    protected function setUp(): void
     {
-        $user = User::create([
-            'nama_anak' => 'Tania',
-            'nik_anak' => '3210987654321234',
-            'password' => Hash::make('password123'),
-            'role' => 'orangtua',
-        ]);
+        parent::setUp();
+        $this->markTestSkipped('Immunization feature removed');
+    }
 
-        $imunisasi = Immunization::create([
-            'name' => 'Polio',
-            'age' => '0 bulan',
-            'description' => 'Vaksin Polio',
-        ]);
-
-        $this->actingAs($user)->post('/orangtua/immunization_records', [
-            'immunization_id' => $imunisasi->id,
-            'immunized_at' => now()->toDateString(),
-            'status' => 'Sudah',
-        ])->assertRedirect(route('orangtua.immunization_records.index'));
-
-        $this->assertDatabaseHas('immunization_records', [
-            'user_id' => $user->id,
-            'immunization_id' => $imunisasi->id,
-            'status' => 'Sudah',
-        ]);
+    public function test_placeholder()
+    {
+        $this->assertTrue(true);
     }
 }

@@ -1,38 +1,19 @@
 <?php
 
-namespace Tests\Feature\Admin;
+namespace Tests\Feature\Admin\immunizations;
 
-use App\Models\User;
-use App\Models\Immunization;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class ImmunizationUpdateFailureEmptyFieldTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_update_fails_when_required_field_is_empty()
+    protected function setUp(): void
     {
-        $admin = User::create([
-            'nama_anak' => null,
-            'nik_anak' => '1234567890123456',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-        ]);
+        parent::setUp();
+        $this->markTestSkipped('Immunization feature removed');
+    }
 
-        $immunization = Immunization::create([
-            'name' => 'Polio',
-            'age' => '0 bulan',
-            'description' => 'Deskripsi awal',
-        ]);
-
-        $response = $this->actingAs($admin)->put("/admin/immunizations/{$immunization->id}", [
-            'name' => '', 
-            'age' => '2 bulan',
-            'description' => 'Deskripsi setelah update',
-        ]);
-
-        $response->assertSessionHasErrors('name');
+    public function test_placeholder()
+    {
+        $this->assertTrue(true);
     }
 }

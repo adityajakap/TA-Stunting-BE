@@ -13,7 +13,22 @@ class NutritionController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $menus = NutritionRecommendation::all();
+        // Allow simple search from the admin search modal
+        $search = request('search');
+
+        $query = NutritionRecommendation::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('nutrition', 'like', "%{$search}%")
+                  ->orWhere('ingredients', 'like', "%{$search}%");
+            });
+        }
+
+        // Paginate so the view can call ->links()
+        $menus = $query->orderBy('created_at', 'desc')->paginate(12)->withQueryString();
+
         return view('admin.nutrition.index', compact('menus'));
     }
 

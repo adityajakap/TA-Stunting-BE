@@ -13,6 +13,12 @@ class UpdateFailureMissingImmunizedAtTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->markTestSkipped('Immunization feature removed');
+    }
+
     public function test_update_fails_when_immunized_at_is_missing()
     {
         

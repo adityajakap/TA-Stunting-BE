@@ -3,19 +3,125 @@
 @section('title', 'Tambah Pencapaian')
 
 @section('content')
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">
-            <h4 class="mb-0">Tambah Pencapaian Tahapan Perkembangan</h4>
-        </div>
+<style>
+    .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1280px;
+        margin: 2rem auto 1rem;
+        padding: 0 1rem;
+    }
+
+    .main-title {
+        color: #1e5a6e;
+        font-size: 1.75rem;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .card-wrapper {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1rem 2rem;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-body {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        width: 100%;
+        background-color: #fff;
+    }
+
+    .form-control:focus {
+        border-color: #005f77;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 95, 119, 0.1);
+    }
+
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 2rem;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #005f77;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #014f66;
+    }
+
+    .table thead th { background: #f8fafc; }
+
+    .empty-message { text-align: center; font-size: 1rem; color: #6b7280; margin: 3rem 0; }
+</style>
+
+<div class="main-header">
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+        <x-back-button :url="route('orangtua.tahapan_perkembangan.index')" />
+        <h1 class="main-title">Tambah Pencapaian Tahapan Perkembangan</h1>
+    </div>
+    <div class="action-buttons"></div>
+</div>
+
+<div class="card-wrapper">
+    <div class="card mb-4">
         <div class="card-body">
             <form action="{{ route('orangtua.tahapan_perkembangan.store') }}" method="POST">
                 @csrf
 
-                {{-- Tahapan Perkembangan --}}
                 <div class="mb-3">
                     <label for="tahapan_perkembangan_id" class="form-label">Pilih Tahapan Perkembangan</label>
-                    <select class="form-select" name="tahapan_perkembangan_id" id="tahapan_perkembangan_id" required>
+                    <select name="tahapan_perkembangan_id" id="tahapan_perkembangan_id" class="form-control" required>
                         <option value="">-- Pilih Tahapan --</option>
                         @foreach($tahapanPerkembangan as $tahapan)
                             <option value="{{ $tahapan->id }}" {{ old('tahapan_perkembangan_id') == $tahapan->id ? 'selected' : '' }}>
@@ -25,34 +131,22 @@
                     </select>
                 </div>
 
-                {{-- Tanggal Pencapaian --}}
                 <div class="mb-3">
                     <label for="tanggal_pencapaian" class="form-label">Tanggal Pencapaian</label>
-                    <input type="date" class="form-control" name="tanggal_pencapaian" id="tanggal_pencapaian" value="{{ old('tanggal_pencapaian') }}" required>
+                    <input type="date" name="tanggal_pencapaian" id="tanggal_pencapaian" class="form-control" value="{{ old('tanggal_pencapaian') }}" required max="{{ now()->toDateString() }}">
                 </div>
 
-                {{-- Status --}}
-                <div class="mb-3">
-                    <label for="status" class="form-label">Status</label>
-                    <select class="form-select" name="status" id="status" required>
-                        <option value="tercapai" {{ old('status') == 'tercapai' ? 'selected' : '' }}>Tercapai</option>
-                        <option value="belum_tercapai" {{ old('status') == 'belum_tercapai' ? 'selected' : '' }}>Belum Tercapai</option>
-                    </select>
-                </div>
-
-                {{-- Catatan --}}
                 <div class="mb-3">
                     <label for="catatan" class="form-label">Catatan</label>
-                    <textarea class="form-control" name="catatan" id="catatan" rows="3">{{ old('catatan') }}</textarea>
+                    <textarea name="catatan" id="catatan" class="form-control" rows="3">{{ old('catatan') }}</textarea>
                 </div>
 
-                {{-- Tombol --}}
-                <div class="d-flex justify-content-between">
-                    <a href="{{ route('orangtua.tahapan_perkembangan.index') }}" class="btn btn-outline-secondary">Kembali ke Daftar</a>
-                    <button type="submit" class="btn text-white" style="background-color: #005f77;">Simpan</button>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 @endsection

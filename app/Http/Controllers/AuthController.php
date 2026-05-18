@@ -22,14 +22,15 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'nama_anak' => 'required',
-            'nik_anak' => 'required|digits:16|unique:users,nik_anak',
+            'nama_anak' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date|before_or_equal:today',
             'password' => 'required|min:6|confirmed',
         ]);
 
         User::create([
             'nama_anak' => $request->nama_anak,
-            'nik_anak' => $request->nik_anak,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            // keep nik_anak nullable in DB but we no longer require it on register
             'password' => Hash::make($request->password),
             'role' => 'orangtua', 
         ]);
@@ -39,9 +40,18 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('nik_anak', 'password');
+        // Backwards-compatible: try to authenticate using nama_anak first; if that fails,
+        // attempt using nik_anak with the same input (so existing accounts with NIK still work).
+        $identifier = $request->input('nama_anak');
+        $password = $request->input('password');
 
-        if (Auth::attempt($credentials)) {
+        $attemptByName = Auth::attempt(['nama_anak' => $identifier, 'password' => $password]);
+        $attemptByNik = false;
+        if (! $attemptByName) {
+            $attemptByNik = Auth::attempt(['nik_anak' => $identifier, 'password' => $password]);
+        }
+
+        if ($attemptByName || $attemptByNik) {
             $user = Auth::user();
 
             // Jika ingin pakai role:
@@ -57,7 +67,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'login' => 'NIK atau password salah.',
+            'login' => 'Nama Anak atau password salah.',
         ]);
     }
 

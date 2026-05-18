@@ -11,8 +11,8 @@ class AdminSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'nama_anak' => null,
-            'nik_anak' => '1234567890123456',
+            'nama_anak' => 'admin123',
+            'nik_anak' => null,
             'password' => Hash::make('admin123'),
             'role' => 'admin',
             'created_at' => now(),

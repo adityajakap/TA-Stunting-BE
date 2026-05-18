@@ -106,13 +106,6 @@
 
     {{-- FITUR UTAMA ADMIN --}}
     <div class="feature-grid">
-        <a href="{{ route('admin.immunizations.index') }}" class="feature-box-link">
-            <div class="feature-box">
-                <i class="fas fa-syringe icon-feature"></i>
-                <h3>Imunisasi</h3>
-                <p>Kelola data imunisasi anak dari berbagai pengguna secara terpusat.</p>
-            </div>
-        </a>
         <a href="{{ route('admin.detections.index') }}" class="feature-box-link">
             <div class="feature-box">
                 <i class="fas fa-search icon-feature"></i>
@@ -123,7 +116,7 @@
         <a href="{{ route('admin.nutrition.index') }}" class="feature-box-link">
             <div class="feature-box">
                 <i class="fas fa-utensils icon-feature"></i>
-                <h3>Nutrisi</h3>
+                <h3>Menu</h3>
                 <p>Atur dan kelola rekomendasi menu bergizi untuk anak-anak.</p>
             </div>
         </a>

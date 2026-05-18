@@ -12,6 +12,8 @@ class Artikel extends Model
         'content',
         'image',
         'views',
+        'is_published',
+        'published_at',
     ];
 
     public function kategoris()

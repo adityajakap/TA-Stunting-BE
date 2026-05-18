@@ -3,7 +3,8 @@
 @section('content')
 <div class="container mt-5">
     <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">
+        <div class="card-header bg-secondary text-white" style="display:flex; align-items:center; gap:0.5rem; padding:1rem;">
+            <x-back-button :url="route('admin.tahapan_perkembangan.index')" />
             <h4 class="mb-0">Tambah Tahapan Perkembangan</h4>
         </div>
         <div class="card-body">
@@ -33,7 +34,6 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <a href="{{ route('admin.tahapan_perkembangan.index') }}" class="btn btn-outline-secondary me-2">Kembali</a>
                     <button type="submit" class="btn btn-secondary">Simpan</button>
                 </div>
             </form>

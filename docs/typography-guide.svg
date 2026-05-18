@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="980" viewBox="0 0 1200 980">
+  <defs>
+    <style type="text/css"><![CDATA[
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+      .bg { fill: #ffffff; }
+      .title { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; fill: #0f172a; font-weight:700; }
+      .label { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; fill: #374151; font-weight:600; }
+      .spec { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; fill: #6b7280; }
+      .sample { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; fill: #0f172a; }
+      .accent { fill: #005f77; }
+      .card { fill: #f8fafc; stroke: #e6eef0; rx: 10; }
+    ]]></style>
+  </defs>
+
+  <rect width="1200" height="980" fill="#f3f4f6" />
+
+  <g transform="translate(40,30)">
+    <text x="20" y="24" class="title" style="font-size:28px;">Typography — Design System</text>
+    <text x="20" y="52" class="spec" style="font-size:13px;">A compact reference of headline, body and UI text styles used on the site.</text>
+
+    <!-- grid -->
+    <g transform="translate(0,80)">
+      <!-- Left column samples -->
+      <rect x="0" y="0" width="740" height="820" class="card" />
+
+      <!-- Rows: H1 -->
+      <g transform="translate(24,30)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Headline 1</text>
+        <text class="sample accent" x="0" y="36" style="font-size:36px; font-weight:700;">This is Headline 1</text>
+        <text class="spec" x="360" y="36" style="font-size:12px;">36 / 44 / 700</text>
+      </g>
+
+      <!-- H2 -->
+      <g transform="translate(24,110)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Headline 2</text>
+        <text class="sample" x="0" y="36" style="font-size:28px; font-weight:600;">This is Headline 2</text>
+        <text class="spec" x="360" y="36" style="font-size:12px;">28 / 36 / 600</text>
+      </g>
+
+      <!-- H3 -->
+      <g transform="translate(24,190)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Headline 3</text>
+        <text class="sample" x="0" y="36" style="font-size:22px; font-weight:600;">This is Headline 3</text>
+        <text class="spec" x="360" y="36" style="font-size:12px;">22 / 30 / 600</text>
+      </g>
+
+      <!-- H4 -->
+      <g transform="translate(24,270)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Headline 4</text>
+        <text class="sample" x="0" y="36" style="font-size:18px; font-weight:600;">This is Headline 4</text>
+        <text class="spec" x="360" y="36" style="font-size:12px;">18 / 26 / 600</text>
+      </g>
+
+      <!-- H5 -->
+      <g transform="translate(24,340)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Headline 5</text>
+        <text class="sample" x="0" y="36" style="font-size:16px; font-weight:600;">This is Headline 5</text>
+        <text class="spec" x="360" y="36" style="font-size:12px;">16 / 24 / 600</text>
+      </g>
+
+      <!-- Subtitle -->
+      <g transform="translate(24,400)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Subtitle / Lead</text>
+        <text class="sample" x="0" y="30" style="font-size:14px; font-weight:500;">This is an attentive subtitle used for intros.</text>
+        <text class="spec" x="360" y="30" style="font-size:12px;">14 / 20 / 500</text>
+      </g>
+
+      <!-- Paragraphs -->
+      <g transform="translate(24,470)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Paragraph 1</text>
+        <text class="sample" x="0" y="30" style="font-size:16px; font-weight:400;">This is a paragraph — used for general body copy. It should be comfortable to read at 16px with ample line-height to make content approachable and scannable.</text>
+        <text class="spec" x="360" y="30" style="font-size:12px;">16 / 24 / 400</text>
+      </g>
+
+      <g transform="translate(24,570)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Paragraph 2 (small)</text>
+        <text class="sample" x="0" y="30" style="font-size:14px; font-weight:400;">This is a smaller paragraph for meta, captions, and secondary content.</text>
+        <text class="spec" x="360" y="30" style="font-size:12px;">14 / 20 / 400</text>
+      </g>
+
+      <!-- UI / Button -->
+      <g transform="translate(24,650)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Button / UI</text>
+        <rect x="0" y="12" width="120" height="40" rx="8" fill="#005f77" />
+        <text x="60" y="38" text-anchor="middle" class="sample" style="font-size:14px; font-weight:700; fill:#ffffff;">Primary</text>
+        <text class="spec" x="360" y="36" style="font-size:12px;">14 / 20 / 700</text>
+      </g>
+
+      <!-- Caption -->
+      <g transform="translate(24,720)">
+        <text class="label" x="0" y="0" style="font-size:12px;">Caption / Overline</text>
+        <text class="sample" x="0" y="24" style="font-size:12px; font-weight:600; color:#6b7280;">CAPTION • LABEL</text>
+        <text class="spec" x="360" y="24" style="font-size:12px;">12 / 16 / 600</text>
+      </g>
+    </g>
+
+    <!-- Right column: short notes -->
+    <g transform="translate(780,80)">
+      <rect x="0" y="0" width="360" height="360" rx="10" fill="#ffffff" stroke="#e6eef0" />
+      <text x="20" y="28" class="label" style="font-size:14px;">Guidelines</text>
+      <text x="20" y="56" class="spec" style="font-size:13px;">- Base font: Segoe UI / system sans</text>
+      <text x="20" y="76" class="spec" style="font-size:13px;">- Accent color: #005f77</text>
+      <text x="20" y="96" class="spec" style="font-size:13px;">- Body: 16px / 24px</text>
+      <text x="20" y="116" class="spec" style="font-size:13px;">- Headline scale shown left</text>
+
+      <text x="20" y="154" class="label" style="font-size:13px;">Usage</text>
+      <text x="20" y="174" class="spec" style="font-size:12px;">Use H1 for page titles, H2 for section titles, H3 for cards and lists.</text>
+      <text x="20" y="194" class="spec" style="font-size:12px;">Keep paragraphs readable: 60–75 characters per line is ideal.</text>
+
+      <text x="20" y="234" class="label" style="font-size:13px;">Accessibility</text>
+      <text x="20" y="254" class="spec" style="font-size:12px;">Ensure contrast &gt; 4.5:1 for body text. Accent color used for buttons and highlights.</text>
+
+      <text x="20" y="300" class="label" style="font-size:13px;">Download</text>
+      <text x="20" y="320" class="spec" style="font-size:12px;">SVG file saved at /docs/typography-guide.svg</text>
+    </g>
+
+  </g>
+</svg>

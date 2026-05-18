@@ -2,109 +2,223 @@
 
 @section('content')
 <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #e5e7eb;
-        margin: 0;
-        padding: 0;
+    .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1280px;
+        margin: 2rem auto 1rem;
+        padding: 0 1rem;
     }
 
-    .container {
-        max-width: 800px;
-        margin: 2rem auto;
-        background-color: #f3f4f6;
-        padding: 2rem;
-        border-radius: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    h1 {
+    .main-title {
         color: #005f77;
-        font-size: 1.8rem;
+        font-size: 2rem;
+        margin: 0;
+    }
+
+    .card-wrapper {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1rem 2rem;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        width: 100%;
+        background-color: #fff;
+        transition: border-color 0.3s ease;
+        font-family: inherit;
+    }
+
+    .form-control:focus {
+        border-color: #005f77;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 95, 119, 0.1);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 300px;
+    }
+
+    .mb-3 {
         margin-bottom: 1.5rem;
     }
 
-    label {
-        display: block;
-        margin-top: 1rem;
-        font-weight: 600;
-        color: #374151;
+    .button-group {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 2rem;
     }
 
-    input[type="text"],
-    input[type="file"],
-    textarea,
-    select {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: 0.5rem;
-        margin-top: 0.5rem;
-        font-size: 1rem;
-        background-color: #fff;
-    }
-
-    select[multiple] {
-        height: auto;
-    }
-
-    button {
-        margin-top: 1.5rem;
-        padding: 0.75rem 1.5rem;
-        background-color: #005f77;
-        color: white;
+    .btn {
+        padding: 0.6rem 1.2rem;
         border: none;
         border-radius: 0.5rem;
         font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
     }
 
-    button:hover {
+    .btn-primary {
+        background-color: #005f77;
+        color: white;
+    }
+
+    .btn-primary:hover {
         background-color: #014f66;
     }
 
-    .back-link {
+    .file-input-wrapper {
+        position: relative;
         display: inline-block;
-        margin-top: 1rem;
-        text-decoration: none;
-        color: #374151;
-        font-size: 0.9rem;
     }
 
-    .back-link:hover {
-        text-decoration: underline;
+    .file-input-label {
+        display: inline-block;
+        padding: 0.75rem 1rem;
+        background-color: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .file-input-label:hover {
+        background-color: #e5e7eb;
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+
+    .image-preview {
+        margin-top: 1rem;
+    }
+
+    .image-preview img {
+        max-width: 200px;
+        border-radius: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .alert ul {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+
+    .alert li {
+        margin-bottom: 0.25rem;
     }
 </style>
 
-<div class="container">
-    <h1>Buat Artikel Baru</h1>
+<div class="main-header">
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+        <x-back-button :url="route('admin.artikel.index')" />
+        <h1 class="main-title">Buat Artikel Baru</h1>
+    </div>
+</div>
 
-    <form action="{{ route('admin.artikel.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+<div class="card-wrapper">
+    <div class="card">
+        <div class="card-body">
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        <label for="title">Judul Artikel</label>
-        <input type="text" name="title" id="title" value="{{ old('title') }}" required>
+            <form action="{{ route('admin.artikel.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
-        <label for="content">Konten</label>
-        <textarea name="content" id="content" rows="10" required>{{ old('content') }}</textarea>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Judul Artikel</label>
+                    <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}" required>
+                </div>
 
-        <label for="image">Gambar (opsional)</label>
-        <input type="file" name="image" id="image" accept="image/*">
+                <div class="mb-3">
+                    <label for="content" class="form-label">Konten</label>
+                    <textarea name="content" id="content" class="form-control" required>{{ old('content') }}</textarea>
+                </div>
 
-        <label for="kategori">Pilih Kategori</label>
-        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-            @foreach ($kategoris as $kategori)
-                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
-                    <input type="checkbox" name="kategori[]" value="{{ $kategori->id }}">
-                    {{ $kategori->name }}
-                </label>
-            @endforeach
+                <div class="mb-3">
+                    <label for="image" class="form-label">Gambar</label>
+                    <div class="file-input-wrapper">
+                        <label for="image" class="file-input-label">Chose File</label>
+                        <input type="file" name="image" id="image" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="publish" value="1">
+                        <span>Publikasikan sekarang</span>
+                    </label>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
         </div>
-
-        <button type="submit">Publikasikan</button>
-    </form>
-
-    <a href="{{ route('admin.artikel.index') }}" class="back-link">← Kembali ke daftar artikel</a>
+    </div>
 </div>
 @endsection

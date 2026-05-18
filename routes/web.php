@@ -8,9 +8,8 @@ use App\Http\Controllers\{
     ArtikelController,
     ArtikelKategoriController,
     DetectionController,
-    AdminDetectionController,
-    ImmunizationController,
-    ImmunizationRecordController,
+    // AdminDetectionController removed (admin handled by DetectionController)
+    AdminTahapanPerkembanganDataController,
     TahapanPerkembanganController,
     TahapanPerkembanganDataController,
     BMICalculatorController,
@@ -70,6 +69,26 @@ Route::middleware(['auth'])->group(function () {
         foreach ($menuByCategory as $kategori => $list) {
             $menus[$kategori] = $getMenuByDate($list);
         }
+        
+        // Ensure we always have at least 3 menus by adding fallback if needed
+        $allMenus = DB::table('nutrition_recommendations')->get();
+        $availableMenus = $menus->filter()->values();
+        
+        // If we have less than 3 menus, add random ones from all menus
+        while ($availableMenus->count() < 3 && $availableMenus->count() < $allMenus->count()) {
+            $randomMenu = $allMenus->random();
+            if (!$availableMenus->contains('id', $randomMenu->id)) {
+                $availableMenus->push($randomMenu);
+            }
+        }
+        
+        // Replace the original menus with the guaranteed 3 menus
+        $categories = ['pagi', 'siang', 'malam'];
+        for ($i = 0; $i < min(3, $availableMenus->count()); $i++) {
+            if ($i < count($categories)) {
+                $menus[$categories[$i]] = $availableMenus[$i];
+            }
+        }
 
         $artikels = DB::table('artikels')->latest()->get(); // Ambil semua artikel untuk carousel
 
@@ -90,6 +109,10 @@ Route::middleware(['auth'])->group(function () {
 // Deteksi Stunting (Admin)
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/deteksi-stunting', [DetectionController::class, 'index'])->name('admin.detections.index');
+    Route::get('/admin/deteksi-stunting/export-pdf', [DetectionController::class, 'exportPdf'])->name('admin.detections.export-pdf');
+    // Admin - tambah deteksi untuk anak lain
+    Route::get('/admin/deteksi-stunting/create', [DetectionController::class, 'adminCreate'])->name('admin.detections.create');
+    Route::post('/admin/deteksi-stunting', [DetectionController::class, 'adminStore'])->name('admin.detections.store');
 });
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
@@ -114,12 +137,18 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::delete('/{id}', [ArtikelController::class, 'destroy'])->name('destroy');
     });
 
-    // 🔹 Imunisasi
-    Route::resource('immunizations', ImmunizationController::class); 
+    // 🔹 Imunisasi (dihapus)
+    // fitur imunisasi telah dihapus — routes dan controller dihapus
 
-    // 🔹 Tahapan Perkembangan
-    Route::resource('tahapan_perkembangan', TahapanPerkembanganController::class);
+    // 🔹 Tahapan Perkembangan (Read-only - Data sudah di-seed dari database)
+    Route::get('tahapan_perkembangan', [TahapanPerkembanganController::class, 'index'])->name('tahapan_perkembangan.index');
     Route::get('perkembangan/create', [TahapanPerkembanganController::class, 'create'])->name('perkembangan.create');
+
+    // 🔹 Admin: Daftar Anak & Tambah Pencapaian untuk masing-masing anak
+    Route::get('perkembangan/children', [AdminTahapanPerkembanganDataController::class, 'index'])->name('perkembangan.children.index');
+    Route::get('perkembangan/children/{user}', [AdminTahapanPerkembanganDataController::class, 'show'])->name('perkembangan.children.show');
+    Route::get('perkembangan/children/{user}/create', [AdminTahapanPerkembanganDataController::class, 'create'])->name('perkembangan.children.create');
+    Route::post('perkembangan/children/{user}', [AdminTahapanPerkembanganDataController::class, 'store'])->name('perkembangan.children.store');
 
     // 🔹 Nutrition
     Route::resource('nutrition', NutritionController::class)->except(['show']);
@@ -131,9 +160,8 @@ Route::prefix('orangtua/artikel')->name('orangtua.artikel.')->middleware('auth')
     Route::get('/{id}', [UserArtikelController::class, 'show'])->name('show');
 });
 
-// Orangtua Immunization & Tahapan Perkembangan
+// Orangtua Tahapan Perkembangan (imunisasi dihapus)
 Route::prefix('orangtua')->name('orangtua.')->middleware('auth')->group(function () {
-    Route::resource('immunization_records', ImmunizationRecordController::class);
     Route::resource('tahapan_perkembangan', TahapanPerkembanganDataController::class);
 });
 
@@ -191,26 +219,12 @@ Route::middleware(['auth'])->group(function () {
         return app()->make(BMICalculatorController::class)->deleteRow($index);
     })->name('hapus-bmi-row');
         
-    Route::post('/kalori-harian', function(Request $request) {
-        if (Auth::user()->role !== 'orangtua') {
-            abort(403, 'Unauthorized. Only orangtua can access this feature.');
-        }
-        return app()->make(BMICalculatorController::class)->hitungKalori($request);
-    })->name('kalori-harian');
-        
     Route::post('/calculate-calories', function(Request $request) {
         if (Auth::user()->role !== 'orangtua') {
             abort(403, 'Unauthorized. Only orangtua can access this feature.');
         }
         return app()->make(BMICalculatorController::class)->calculateCalories($request);
     })->name('calculate.calories');
-        
-    Route::post('/hitung-kalori', function(Request $request) {
-        if (Auth::user()->role !== 'orangtua') {
-            abort(403, 'Unauthorized. Only orangtua can access this feature.');
-        }
-        return app()->make(BMICalculatorController::class)->hitungKalori($request);
-    })->name('hitungKalori');
 });
 
 Route::get('/profile', function () {

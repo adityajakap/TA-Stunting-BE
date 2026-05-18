@@ -13,6 +13,11 @@
         </div>
 
         <div class="row mb-3">
+            <div class="col-md-4 fw-semibold text-secondary">Tanggal Lahir</div>
+            <div class="col-md-8">{{ Auth::user()->tanggal_lahir ? Auth::user()->tanggal_lahir->format('d M Y') : '-' }}</div>
+        </div>
+
+        <div class="row mb-3">
             <div class="col-md-4 fw-semibold text-secondary">NIK Anak</div>
             <div class="col-md-8">{{ Auth::user()->nik_anak }}</div>
         </div>

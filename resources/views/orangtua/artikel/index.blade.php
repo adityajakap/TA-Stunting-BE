@@ -170,35 +170,14 @@
 
 {{-- Header --}}
 <div class="main-header">
-    <h1 class="main-title">Artikel untuk Anda</h1>
-    <div class="action-buttons">
-        <button class="btn-icon-mini" onclick="toggleFilter()" title="Filter"><i class="fas fa-filter"></i></button>
-        <button class="btn-icon-mini" onclick="toggleSearch()" title="Cari"><i class="fas fa-search"></i></button>
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+        <x-back-button />
+        <h1 class="main-title">Artikel untuk Anda</h1>
     </div>
+    
 </div>
 
-{{-- Filter Modal --}}
-<div id="filterModal" class="modal-overlay">
-    <div class="modal-content">
-        <h2>Filter Berdasarkan Kategori</h2>
-        <form method="GET" action="{{ route('orangtua.artikel.index') }}">
-            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-                @foreach ($kategoris as $kategori)
-                    <label>
-                        <input type="checkbox" name="kategori[]" value="{{ $kategori->id }}"
-                            {{ in_array($kategori->id, $kategoriIds ?? []) ? 'checked' : '' }}>
-                        {{ $kategori->name }}
-                    </label>
-                @endforeach
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
-                <button type="submit" class="btn">Terapkan</button>
-                <a href="{{ route('orangtua.artikel.index') }}" class="btn" style="background-color: #9ca3af;">Reset</a>
-                <button type="button" class="btn" style="background-color: #ef4444;" onclick="toggleFilter()">Tutup</button>
-            </div>
-        </form>
-    </div>
-</div>
+{{-- kategori filter removed --}}
 
 {{-- Search Modal --}}
 <div id="searchModal" class="modal-overlay">
@@ -224,14 +203,7 @@
                      alt="Gambar Artikel" class="article-image">
                 <div class="card-body">
                     <div class="card-title">{{ Str::limit($artikel->title, 60) }}</div>
-                    <div style="margin-bottom: 0.5rem;">
-                        @foreach ($artikel->kategoris->take(3) as $kategori)
-                            <span class="badge">#{{ $kategori->name }}</span>
-                        @endforeach
-                        @if ($artikel->kategoris->count() > 3)
-                            <span class="badge">...</span>
-                        @endif
-                    </div>
+                    {{-- kategori badges removed --}}
                     <div class="card-actions">
                         <div class="view-count">👁 {{ $artikel->views ?? 0 }}</div>
                         <a href="{{ route('orangtua.artikel.show', $artikel->id) }}" class="btn">Read All</a>
@@ -245,7 +217,7 @@
 </div>
 
 {{-- Kembali ke Semua Artikel --}}
-@if(request('search') || request()->has('kategori'))
+@if(request('search'))
     <a href="{{ route('orangtua.artikel.index') }}" 
        class="btn" 
        style="position: fixed; bottom: 30px; right: 30px; padding: 0.6rem 1.5rem; font-size: 0.85rem; z-index: 1000;">

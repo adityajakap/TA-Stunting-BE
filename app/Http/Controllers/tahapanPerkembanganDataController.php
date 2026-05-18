@@ -73,7 +73,6 @@ class TahapanPerkembanganDataController extends Controller
         $request->validate([
             'tahapan_perkembangan_id' => 'required|exists:tahapan_perkembangan,id',
             'tanggal_pencapaian' => 'required|date|before_or_equal:today',
-            'status' => 'required|in:tercapai,belum_tercapai',
             'catatan' => 'nullable|string',
         ]);
 
@@ -82,7 +81,7 @@ class TahapanPerkembanganDataController extends Controller
             'user_id' => Auth::id(),
             'tahapan_perkembangan_id' => $request->tahapan_perkembangan_id,
             'tanggal_pencapaian' => $request->tanggal_pencapaian,
-            'status' => $request->status,
+            // Status akan di-auto-calculate melalui model boot method
             'catatan' => $request->catatan,
         ]);
 
@@ -99,7 +98,6 @@ class TahapanPerkembanganDataController extends Controller
         $request->validate([
             'tahapan_perkembangan_id' => 'required|exists:tahapan_perkembangan,id',
             'tanggal_pencapaian' => 'required|date|before_or_equal:today',
-            'status' => 'required|in:tercapai,belum_tercapai',
             'catatan' => 'nullable|string',
         ]);
 
@@ -110,7 +108,7 @@ class TahapanPerkembanganDataController extends Controller
         $tahapanPerkembanganData->update([
             'tahapan_perkembangan_id' => $request->tahapan_perkembangan_id,
             'tanggal_pencapaian' => $request->tanggal_pencapaian,
-            'status' => $request->status,
+            // Status akan di-auto-calculate melalui model boot method
             'catatan' => $request->catatan,
         ]);
 

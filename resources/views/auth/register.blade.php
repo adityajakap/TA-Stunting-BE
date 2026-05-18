@@ -94,9 +94,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="nik_anak" class="form-label">NIK Anak</label>
-                        <input type="text" name="nik_anak" id="nik_anak" class="form-control" value="{{ old('nik_anak') }}">
-                        @error('nik_anak')
+                        <label for="tanggal_lahir" class="form-label">Tanggal Lahir Anak</label>
+                        <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" value="{{ old('tanggal_lahir') }}" required>
+                        @error('tanggal_lahir')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
                     </div>

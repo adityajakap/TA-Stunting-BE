@@ -11,21 +11,14 @@ class ImmunizationStoreFailureNonAdminTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_store_fails_when_user_is_not_admin()
+    protected function setUp(): void
     {
-        $orangtua = User::create([
-            'nama_anak' => 'Tania',
-            'nik_anak' => '3210987654325678',
-            'password' => Hash::make('password123'),
-            'role' => 'orangtua',
-        ]);
+        parent::setUp();
+        $this->markTestSkipped('Immunization feature removed');
+    }
 
-        $response = $this->actingAs($orangtua)->post('/admin/immunizations', [
-            'name' => 'BCG',
-            'age' => '1 bulan',
-            'description' => 'Imunisasi BCG untuk bayi',
-        ]);
-
-        $response->assertForbidden(); 
+    public function test_placeholder()
+    {
+        $this->assertTrue(true);
     }
 }

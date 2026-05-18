@@ -124,13 +124,11 @@
         }
 
         .content-card {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            animation: fadeIn 0.6s ease-in-out;
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
         }
-
         .dropdown-menu-end {
             right: 0;
             left: auto;
@@ -152,7 +150,7 @@
 
             {{-- Brand --}}
             <a class="navbar-brand" href="{{ Auth::check() && Auth::user()->role === 'admin' ? route('admin.dashboard') : route('orangtua.dashboard') }}">
-                Stuntings
+                <img src="{{ asset('images/logo2.png') }}" alt="Stunting Logo" style="height:55px;">
             </a>
 
             {{-- NAVBAR MENU --}}
@@ -171,17 +169,17 @@
                         <a class="nav-link" href="{{ $role === 'admin' ? route('admin.detections.index') : route('orangtua.detections.create') }}">Deteksi</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('bmi') }}">BMI</a>
+                        <a class="nav-link" href="{{ $role === 'admin' ? route('admin.nutrition.index') : route('orangtua.nutritionUs.index') }}">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ $role === 'admin' ? route('admin.nutrition.index') : route('orangtua.nutritionUs.index') }}">Nutrisi</a>
+                        @if($role === 'orangtua')
+                            <a class="nav-link" href="{{ route('bmi') }}">BMI</a>
+                        @endif
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ $role === 'admin' ? route('admin.artikel.index') : route('orangtua.artikel.index') }}">Artikel</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ $role === 'admin' ? route('admin.immunizations.index') : route('orangtua.immunization_records.index') }}">Imunisasi</a>
-                    </li>
+                    {{-- Imunisasi feature removed --}}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ $role === 'admin' ? route('admin.tahapan_perkembangan.index') : route('orangtua.tahapan_perkembangan.index') }}">Perkembangan</a>
                     </li>

@@ -31,9 +31,9 @@ class OrangtuaDashboardTest extends TestCase
         $response->assertStatus(200);
 
         // Cek konten penting muncul di halaman
-        $response->assertSeeText($orangtua->nama_anak);
-        $response->assertSee('Immunization');
-        $response->assertSee('Deteksi');
-        $response->assertSee('BMI');
+    $response->assertSeeText($orangtua->nama_anak);
+    // imunisasi feature telah dihapus
+    $response->assertSee('Deteksi');
+    $response->assertSee('BMI');
     }
 }

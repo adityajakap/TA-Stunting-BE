@@ -5,23 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Artikel;
-use App\Models\ArtikelKategori;
 use Illuminate\Support\Facades\Storage;
 
 class ArtikelController extends Controller
 {
     public function index(Request $request)
     {
-        $kategoriIds = $request->input('kategori', []);
         $search = $request->input('search');
-        $kategoris = ArtikelKategori::all();
 
         $artikels = Artikel::with('kategoris')
-            ->when($kategoriIds, function ($query) use ($kategoriIds) {
-                $query->whereHas('kategoris', function ($q) use ($kategoriIds) {
-                    $q->whereIn('artikel_kategori_id', $kategoriIds);
-                });
-            })
             ->when($search, function ($query) use ($search) {
                 $query->where('title', 'like', "%{$search}%");
             })
@@ -29,14 +21,13 @@ class ArtikelController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('admin.artikel.index', compact('artikels', 'kategoris', 'kategoriIds', 'search'));
+        return view('admin.artikel.index', compact('artikels', 'search'));
     }
 
 
     public function create()
     {
-        $kategoris = ArtikelKategori::all();
-        return view('admin.artikel.create', compact('kategoris'));
+        return view('admin.artikel.create');
     }
 
     public function store(Request $request)
@@ -44,8 +35,6 @@ class ArtikelController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'kategori' => 'required|array',
-            'kategori.*' => 'exists:artikel_kategoris,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -62,13 +51,22 @@ class ArtikelController extends Controller
             'slug' => $slug,
         ];
 
+        // Publish handling
+        if ($request->has('publish') && $request->publish) {
+            $data['is_published'] = true;
+            $data['published_at'] = now();
+        } else {
+            $data['is_published'] = false;
+            $data['published_at'] = null;
+        }
+
         if ($request->hasFile('image')) {
             $path = $request->image->store('artikel-images', 'public');
             $data['image'] = $path;
         }
 
-        $artikel = Artikel::create($data);
-        $artikel->kategoris()->attach($request->kategori);
+    $artikel = Artikel::create($data);
+    // kategori feature removed: do not attach kategori
 
         return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil ditambahkan!');
     }
@@ -81,9 +79,8 @@ class ArtikelController extends Controller
 
     public function edit($id)
     {
-        $artikel = Artikel::with('kategoris')->findOrFail($id);
-        $kategoris = ArtikelKategori::all();
-        return view('admin.artikel.edit', compact('artikel', 'kategoris'));
+        $artikel = Artikel::findOrFail($id);
+        return view('admin.artikel.edit', compact('artikel'));
     }
 
     public function update(Request $request, $id)
@@ -91,8 +88,6 @@ class ArtikelController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'kategori' => 'required|array',
-            'kategori.*' => 'exists:artikel_kategoris,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -109,8 +104,17 @@ class ArtikelController extends Controller
             $data['image'] = $artikel->image;
         }
 
-        $artikel->update($data);
-        $artikel->kategoris()->sync($request->kategori);
+        // Update publish fields if provided
+        if ($request->has('publish')) {
+            $data['is_published'] = $request->publish ? true : false;
+            $data['published_at'] = $request->publish ? now() : null;
+        } else {
+            $data['is_published'] = $artikel->is_published;
+            $data['published_at'] = $artikel->published_at;
+        }
+
+    $artikel->update($data);
+    // kategori feature removed: do not sync kategori
 
         return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil diperbarui!');
     }
@@ -123,7 +127,7 @@ class ArtikelController extends Controller
             Storage::delete('public/' . $artikel->image);
         }
 
-        $artikel->kategoris()->detach();
+    // kategori feature removed: no relationship to detach
         $artikel->delete();
 
         return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil dihapus!');

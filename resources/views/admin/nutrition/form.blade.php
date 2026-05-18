@@ -1,31 +1,36 @@
 
-<div class="mb-3">
-    <label>Nama Menu</label>
-    <input type="text" name="name" value="{{ old('name', $menu->name ?? '') }}" class="form-control" required>
+<div>
+    <label for="name">Nama Menu</label>
+    <input type="text" id="name" name="name" value="{{ old('name', $menu->name ?? '') }}" required>
 </div>
-<div class="mb-3">
-    <label>Nutrisi</label>
-    <textarea name="nutrition" class="form-control" required>{{ old('nutrition', $menu->nutrition ?? '') }}</textarea>
+
+<div>
+    <label for="nutrition">Nutrisi</label>
+    <textarea id="nutrition" name="nutrition" rows="4" required>{{ old('nutrition', $menu->nutrition ?? '') }}</textarea>
 </div>
-<div class="mb-3">
-    <label>Bahan-bahan</label>
-    <textarea name="ingredients" class="form-control" required>{{ old('ingredients', $menu->ingredients ?? '') }}</textarea>
+
+<div>
+    <label for="ingredients">Bahan-bahan</label>
+    <textarea id="ingredients" name="ingredients" rows="4" required>{{ old('ingredients', $menu->ingredients ?? '') }}</textarea>
 </div>
-<div class="mb-3">
-    <label>Cara Membuat</label>
-    <textarea name="instructions" class="form-control" required>{{ old('instructions', $menu->instructions ?? '') }}</textarea>
+
+<div>
+    <label for="instructions">Cara Membuat</label>
+    <textarea id="instructions" name="instructions" rows="4" required>{{ old('instructions', $menu->instructions ?? '') }}</textarea>
 </div>
-<div class="mb-3">
-    <label>Kategori</label>
-    <select name="category" class="form-control" required>
+
+<div>
+    <label for="category">Kategori</label>
+    <select id="category" name="category" required>
         @foreach(['pagi', 'siang', 'malam', 'snack'] as $kategori)
             <option value="{{ $kategori }}" {{ (old('category', $menu->category ?? '') == $kategori) ? 'selected' : '' }}>{{ ucfirst($kategori) }}</option>
         @endforeach
     </select>
 </div>
-<div class="mb-3">
-    <label>Upload Gambar</label>
-    <input type="file" name="image" class="form-control">
+
+<div>
+    <label for="image">Upload Gambar</label>
+    <input type="file" id="image" name="image">
     @if (!empty($menu->image))
         <p>Gambar Saat Ini:</p>
         <img src="{{ asset('storage/' . $menu->image) }}" width="200">

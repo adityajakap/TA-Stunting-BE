@@ -14,6 +14,59 @@
         margin-right: 0.3rem;
         margin-bottom: 0.2rem;
     }
+
+    .table {
+        width: 100%;
+        /* Use separate borders to allow rounded table corners inside the card */
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 0;
+        background-color: white;
+    }
+
+    .table thead th {
+        background-color: #f9fafb;
+        padding: 0.75rem;
+        font-weight: 600;
+        color: #1f2937;
+        text-align: left;
+        border: 1px solid #e5e7eb;
+        font-size: 0.95rem;
+    }
+
+    .table tbody tr {
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    .table tbody td {
+        padding: 0.75rem;
+        color: #374151;
+        border: 1px solid #e5e7eb;
+        font-size: 0.95rem;
+    }
+
+    /* Rounded corners for the table inside the card */
+    .table thead th:first-child { border-top-left-radius: 0.75rem; }
+    .table thead th:last-child { border-top-right-radius: 0.75rem; }
+    .table tbody tr:last-child td:first-child { border-bottom-left-radius: 0.75rem; }
+    .table tbody tr:last-child td:last-child { border-bottom-right-radius: 0.75rem; }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-muted {
+        color: #6b7280;
+    }
+
+    .table-responsive {
+        margin-top: 1.5rem;
+        overflow-x: auto;
+    }
 </style>
 
 <div class="container px-0">
@@ -22,13 +75,15 @@
 
             {{-- HEADER --}}
             <div class="d-flex justify-content-between align-items-center mb-4" style="max-width: 1280px; margin: 0 auto; ">
-                <h1 class="main-title mb-0" style="color: #005f77; font-size: 1.75rem;">Tahapan Perkembangan</h1>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <x-back-button />
+                    <h1 class="main-title mb-0" style="color: #005f77; font-size: 1.75rem;">Tahapan Perkembangan</h1>
+                </div>
                 <div class="d-flex align-items-center gap-2">
                     <a href="{{ route('orangtua.tahapan_perkembangan.create') }}"
                         class="btn text-white"
                         style="background-color: #005f77;">+ Tambah Pencapaian
-                    </a>
-                    <x-button-icon icon="filter" title="Filter Status" onclick="document.getElementById('filterModal').classList.remove('hidden')" />
+                    </a>    
                 </div>
             </div>
 
@@ -57,15 +112,14 @@
             </div>
 
             {{-- TABEL --}}
-            <div class="table-responsive mt-3">
-                <table class="table table-bordered table-hover bg-white">
-                    <thead class="table-secondary">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
                         <tr>
                             <th>Nama Tahapan</th>
                             <th>Tanggal Pencapaian</th>
                             <th>Status</th>
                             <th>Catatan</th>
-                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,14 +134,6 @@
                                     </span>
                                 </td>
                                 <td>{{ $item->catatan }}</td>
-                                <td class="d-flex gap-2">
-                                    <a href="{{ route('orangtua.tahapan_perkembangan.edit', $item->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <form action="{{ route('orangtua.tahapan_perkembangan.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
-                                    </form>
-                                </td>
                             </tr>
                         @empty
                             <tr>

@@ -62,7 +62,10 @@
 
 {{-- HEADER --}}
 <div class="main-header">
-    <h1 class="main-title">Rekomendasi Nutrisi</h1>
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+        <x-back-button />
+        <h1 class="main-title">Rekomendasi Nutrisi</h1>
+    </div>
     <div class="action-buttons" style="display: flex; gap: 0.5rem;">
         <x-button-icon icon="fas fa-filter" title="Filter" onclick="document.getElementById('filterModal').classList.remove('hidden')" />
         <x-button-icon icon="fas fa-search" title="Cari" onclick="document.getElementById('search-modal').classList.remove('hidden')" />
@@ -120,10 +123,10 @@
                         {{ $menu->name }}
                     </div>
                     <div style="margin-bottom: 0.5rem;">
-                        <span class="badge">#{{ ucfirst($menu->category) }}</span>
+                        <span class="badge">{{ ucfirst($menu->category) }}</span>
                     </div>
                     <x-button :href="route('orangtua.nutritionUs.show', $menu->id)" class="w-full text-center">
-    Lihat Detail
+    Lihat Menu
 </x-button>
                 </div>
             </div>

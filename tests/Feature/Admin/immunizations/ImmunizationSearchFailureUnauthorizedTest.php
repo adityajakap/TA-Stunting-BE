@@ -11,6 +11,12 @@ class ImmunizationSearchFailureUnauthorizedTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->markTestSkipped('Immunization feature removed');
+    }
+
     public function test_non_admin_cannot_access_immunization_search()
     {
         $user = User::create([

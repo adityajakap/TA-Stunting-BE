@@ -84,7 +84,10 @@
 </style>
 
 <div class="container">
-    <h1 class="judul-artikel">{{ $artikel->title }}</h1>
+    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1.5rem;">
+        <x-back-button :url="route('admin.artikel.index')" />
+        <h1 class="judul-artikel" style="text-align:left; margin:0;">{{ $artikel->title }}</h1>
+    </div>
 
     <div class="artikel-meta">
         @foreach ($artikel->kategoris as $kategori)
@@ -103,6 +106,4 @@
         {!! nl2br(e($artikel->content)) !!}
     </div>
 </div>
-
-<a href="{{ route('admin.artikel.index') }}" class="btn-back">← Kembali</a>
 @endsection
