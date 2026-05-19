@@ -10,7 +10,7 @@ class Detection extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 
+        'child_id', 
         'nama',
         'umur',
         'jenis_kelamin',
@@ -20,8 +20,8 @@ class Detection extends Model
         'status',
     ];
 
-    public function user()
+    public function child()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Child::class);
     }
 }

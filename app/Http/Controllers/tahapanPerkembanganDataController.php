@@ -15,26 +15,57 @@ class TahapanPerkembanganDataController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $statusOptions = collect([
-            (object)['id' => 'tercapai', 'name' => 'Tercapai'],
-            (object)['id' => 'belum_tercapai', 'name' => 'Belum Tercapai'],
+        $childId = session('selected_child_id');
+        $child = \App\Models\Child::findOrFail($childId);
+
+        $kategoriOptions = collect([
+            (object)['id' => 'Motorik', 'name' => 'Motorik'],
+            (object)['id' => 'Bahasa', 'name' => 'Bahasa'],
+            (object)['id' => 'Gigi', 'name' => 'Gigi'],
         ]);
 
-        $selectedStatus = $request->input('kategori', []); // gunakan nama param yg sama
+        $selectedKategori = $request->input('kategori', []);
 
-        $query = TahapanPerkembanganData::query();
-
-        if (!empty($selectedStatus)) {
-            $query->whereIn('status', $selectedStatus);
+        $query = TahapanPerkembangan::query();
+        if (!empty($selectedKategori)) {
+            $query->whereIn('kategori', $selectedKategori);
         }
 
-        $data = $query->where('user_id', Auth::id())->orderBy('tanggal_pencapaian')->paginate(10);
+        $tahapanMaster = $query->orderBy('kategori')->orderBy('umur_minimal_bulan')->get();
+
+        // Get achieved data
+        $achievedData = TahapanPerkembanganData::where('child_id', $childId)
+            ->get()
+            ->keyBy('tahapan_perkembangan_id');
+
+        $data = $tahapanMaster->map(function ($tahapan) use ($child, $achievedData) {
+            $achieved = $achievedData->get($tahapan->id);
+            if (!$achieved) {
+                return null;
+            }
+            
+            $tanggal_pencapaian = $achieved->tanggal_pencapaian;
+
+            $statusDetail = \App\Services\DevelopmentStatusService::evaluate($child, $tahapan, $tanggal_pencapaian);
+
+            return (object) [
+                'tahapan' => $tahapan,
+                'achieved_data' => $achieved,
+                'status_detail' => $statusDetail,
+            ];
+        })->filter();
+
+        // Group by kategori
+        $groupedData = $data->groupBy(function ($item) {
+            return $item->tahapan->kategori;
+        });
 
         return view('orangtua.tahapan_perkembangan.index', [
-            'data' => $data,
-            'kategoris' => $statusOptions,
-            'kategoriIds' => $selectedStatus,
+            'groupedData' => $groupedData,
+            'kategoris' => $kategoriOptions,
+            'kategoriIds' => $selectedKategori,
             'action' => route('orangtua.tahapan_perkembangan.index'),
+            'child' => $child
         ]);
     }
 
@@ -78,7 +109,7 @@ class TahapanPerkembanganDataController extends Controller
 
         // Menyimpan pencapaian tahapan perkembangan untuk user
         TahapanPerkembanganData::create([
-            'user_id' => Auth::id(),
+            'child_id' => session('selected_child_id'),
             'tahapan_perkembangan_id' => $request->tahapan_perkembangan_id,
             'tanggal_pencapaian' => $request->tanggal_pencapaian,
             // Status akan di-auto-calculate melalui model boot method

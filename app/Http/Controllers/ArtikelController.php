@@ -13,21 +13,17 @@ class ArtikelController extends Controller
     {
         $search = $request->input('search');
 
-        $artikels = Artikel::with('kategoris')
+        $query = Artikel::with('kategoris')
             ->when($search, function ($query) use ($search) {
                 $query->where('title', 'like', "%{$search}%");
             })
-            ->latest()
-            ->paginate(12)
-            ->withQueryString();
+            ->latest();
 
-        return view('admin.artikel.index', compact('artikels', 'search'));
-    }
+        if ($request->has('paginate')) {
+            return response()->json($query->paginate($request->input('paginate')));
+        }
 
-
-    public function create()
-    {
-        return view('admin.artikel.create');
+        return response()->json($query->get());
     }
 
     public function store(Request $request)
@@ -65,22 +61,21 @@ class ArtikelController extends Controller
             $data['image'] = $path;
         }
 
-    $artikel = Artikel::create($data);
-    // kategori feature removed: do not attach kategori
+        $artikel = Artikel::create($data);
 
-        return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil ditambahkan!');
+        return response()->json(['message' => 'Artikel berhasil ditambahkan!', 'data' => $artikel], 201);
     }
 
     public function show($id)
     {
         $artikel = Artikel::with('kategoris')->findOrFail($id);
-        return view('admin.artikel.show', compact('artikel'));
-    }
+        
+        // Increment views if requested via API
+        if (request()->has('increment_views')) {
+            $artikel->increment('views');
+        }
 
-    public function edit($id)
-    {
-        $artikel = Artikel::findOrFail($id);
-        return view('admin.artikel.edit', compact('artikel'));
+        return response()->json($artikel);
     }
 
     public function update(Request $request, $id)
@@ -104,19 +99,14 @@ class ArtikelController extends Controller
             $data['image'] = $artikel->image;
         }
 
-        // Update publish fields if provided
         if ($request->has('publish')) {
             $data['is_published'] = $request->publish ? true : false;
             $data['published_at'] = $request->publish ? now() : null;
-        } else {
-            $data['is_published'] = $artikel->is_published;
-            $data['published_at'] = $artikel->published_at;
         }
 
-    $artikel->update($data);
-    // kategori feature removed: do not sync kategori
+        $artikel->update($data);
 
-        return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil diperbarui!');
+        return response()->json(['message' => 'Artikel berhasil diperbarui!', 'data' => $artikel]);
     }
 
     public function destroy($id)
@@ -127,9 +117,8 @@ class ArtikelController extends Controller
             Storage::delete('public/' . $artikel->image);
         }
 
-    // kategori feature removed: no relationship to detach
         $artikel->delete();
 
-        return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil dihapus!');
+        return response()->json(['message' => 'Artikel berhasil dihapus!']);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Detection;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Child;
 
 class DetectionController extends Controller
 {
@@ -15,7 +16,7 @@ class DetectionController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $semua = Detection::with('user')->latest()->get();
+        $semua = Detection::with('child.user')->latest()->get();
 
         return view('admin.detections.index', compact('semua'));
     }
@@ -28,10 +29,10 @@ class DetectionController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        // Ambil daftar orangtua/anak untuk dipilih
-        $users = User::where('role', 'orangtua')->get();
+        // Ambil daftar anak untuk dipilih
+        $children = Child::with('user')->get();
 
-        return view('admin.detections.create', compact('users'));
+        return view('admin.detections.create', compact('children'));
     }
 
     // Admin dapat menyimpan deteksi untuk anak yang dipilih
@@ -42,14 +43,14 @@ class DetectionController extends Controller
         }
 
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'child_id' => 'required|exists:children,id',
             'umur' => 'required|integer',
             'jenis_kelamin' => 'required|in:L,P',
             'berat_badan' => 'required|numeric',
             'tinggi_badan' => 'required|numeric',
         ]);
 
-        $user = User::findOrFail($validated['user_id']);
+        $child = Child::findOrFail($validated['child_id']);
 
         $filePath = $validated['jenis_kelamin'] === 'L'
             ? storage_path('app/zscores_boys.json')
@@ -79,8 +80,8 @@ class DetectionController extends Controller
         $status = $z_score < -2 ? 'Stunting' : 'Normal';
 
         Detection::create([
-            'user_id' => $user->id,
-            'nama' => $user->nama_anak,
+            'child_id' => $child->id,
+            'nama' => $child->nama_lengkap_anak,
             'umur' => $umur,
             'jenis_kelamin' => $validated['jenis_kelamin'],
             'berat_badan' => $validated['berat_badan'],
@@ -89,7 +90,7 @@ class DetectionController extends Controller
             'status' => $status,
         ]);
 
-        return redirect()->route('admin.detections.index')->with('success', 'Deteksi berhasil disimpan untuk ' . $user->nama_anak);
+        return redirect()->route('admin.detections.index')->with('success', 'Deteksi berhasil disimpan untuk ' . $child->nama_lengkap_anak);
     }
 
 
@@ -100,7 +101,7 @@ class DetectionController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $semua = Detection::where('user_id', auth()->id())->latest()->get();
+        $semua = Detection::where('child_id', session('selected_child_id'))->latest()->get();
         return view('orangtua.detections.deteksi', compact('semua'));
     }
 
@@ -145,9 +146,11 @@ class DetectionController extends Controller
         // Hanya dua status yang diperlukan: 'Stunting' bila z-score < -2, sisanya 'Normal'
         $status = $z_score < -2 ? 'Stunting' : 'Normal';
 
+        $child = Child::findOrFail(session('selected_child_id'));
+
         Detection::create([
-            'user_id' => auth()->id(),
-            'nama' => auth()->user()->nama_anak,
+            'child_id' => $child->id,
+            'nama' => $child->nama_lengkap_anak,
             'umur' => $umur,
             'jenis_kelamin' => $validated['jenis_kelamin'],
             'berat_badan' => $validated['berat_badan'],
@@ -163,9 +166,9 @@ class DetectionController extends Controller
     // Hapus data deteksi, hanya milik user yang bersangkutan
     public function destroy($id)
     {
-        $detection = Detection::findOrFail($id);
+        $detection = Detection::with('child')->findOrFail($id);
 
-        if (auth()->user()->id !== $detection->user_id) {
+        if ($detection->child->user_id !== auth()->id()) {
             abort(403);
         }
 
@@ -181,7 +184,7 @@ class DetectionController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $semua = Detection::with('user')->latest()->get();
+        $semua = Detection::with('child.user')->latest()->get();
 
         $html = view('admin.detections.pdf', compact('semua'))->render();
         

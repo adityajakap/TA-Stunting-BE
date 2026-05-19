@@ -12,10 +12,14 @@ class TahapanPerkembangan extends Model
     protected $table = 'tahapan_perkembangan';
 
     protected $fillable = [
+        'kategori',
         'nama_tahapan',
         'deskripsi',
         'umur_minimal_bulan',
         'umur_maksimal_bulan',
+        'batas_evaluasi_bulan',
+        'sumber_referensi',
+        'catatan',
     ];
 
     public function dataPerkembangan()

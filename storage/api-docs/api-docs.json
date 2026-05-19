@@ -1,0 +1,1371 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "TA Stunting API",
+        "description": "RESTful API untuk aplikasi deteksi stunting anak. Gunakan endpoint /api/login untuk mendapatkan token Sanctum, lalu masukkan di tombol Authorize.",
+        "contact": {
+            "email": "admin@ta-stunting.local"
+        },
+        "license": {
+            "name": "MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8001",
+            "description": "Backend API Server"
+        }
+    ],
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registrasi pengguna baru (orangtua)",
+                "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nama_lengkap",
+                                    "username",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "nama_lengkap": {
+                                        "type": "string",
+                                        "example": "Budi Santoso"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "example": "budi123"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Registrasi berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Register berhasil."
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|abcdef..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login dan dapatkan token Sanctum",
+                "operationId": "222b2625838e3c57e017987f73598fda",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "username",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "example": "admin"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login berhasil."
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|abcdef..."
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "username": {
+                                                    "type": "string"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "admin",
+                                                        "orangtua"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Username atau password salah"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout (hapus token saat ini)",
+                "operationId": "ad65cbbd4e9f201619eae184a5961a98",
+                "responses": {
+                    "200": {
+                        "description": "Logout berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout berhasil."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/me": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Profil pengguna yang sedang login",
+                "operationId": "8367feff40ba10e43187792cad3132c1",
+                "responses": {
+                    "200": {
+                        "description": "Data pengguna",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "username": {
+                                            "type": "string"
+                                        },
+                                        "role": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/children": {
+            "get": {
+                "tags": [
+                    "Children"
+                ],
+                "summary": "Daftar anak milik orangtua yang login",
+                "operationId": "c043b135af57601b10b3d763e02a649a",
+                "responses": {
+                    "200": {
+                        "description": "List anak",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "nama_lengkap_anak": {
+                                                "type": "string"
+                                            },
+                                            "tanggal_lahir": {
+                                                "type": "string",
+                                                "format": "date"
+                                            },
+                                            "nik_anak": {
+                                                "type": "string",
+                                                "nullable": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Children"
+                ],
+                "summary": "Tambah anak baru",
+                "operationId": "215cfc22b94a9c1f27b3c3073c456cdb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nama_lengkap_anak",
+                                    "tanggal_lahir"
+                                ],
+                                "properties": {
+                                    "nama_lengkap_anak": {
+                                        "type": "string",
+                                        "example": "Adi Kurniawan"
+                                    },
+                                    "tanggal_lahir": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2020-03-15"
+                                    },
+                                    "nik_anak": {
+                                        "type": "string",
+                                        "example": "3174010203200001",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Anak berhasil ditambahkan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/children/{id}": {
+            "get": {
+                "tags": [
+                    "Children"
+                ],
+                "summary": "Detail satu anak",
+                "operationId": "2c740834a73a27cbb586f42c9a03e7b4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data anak"
+                    },
+                    "404": {
+                        "description": "Tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Children"
+                ],
+                "summary": "Update data anak",
+                "operationId": "b50c6731eef2619265c966030c624953",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nama_lengkap_anak": {
+                                        "type": "string"
+                                    },
+                                    "tanggal_lahir": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "nik_anak": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data diperbarui"
+                    },
+                    "404": {
+                        "description": "Tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Children"
+                ],
+                "summary": "Hapus data anak",
+                "operationId": "c17dff4c8510d9f5fdf403ca3bb7aa6f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Anak berhasil dihapus"
+                    },
+                    "404": {
+                        "description": "Tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/nutrition": {
+            "get": {
+                "tags": [
+                    "Nutrition"
+                ],
+                "summary": "[Orangtua] List rekomendasi nutrisi",
+                "operationId": "4eb157ed07189ae0ecc6b2ee4bc2c96a",
+                "parameters": [
+                    {
+                        "name": "kategori[]",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "pagi",
+                                    "siang",
+                                    "malam",
+                                    "snack"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List menu nutrisi"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/nutrition/{id}": {
+            "get": {
+                "tags": [
+                    "Nutrition"
+                ],
+                "summary": "[Orangtua] Detail menu nutrisi",
+                "operationId": "c113ad0bbddc995d78a74e302a3b3a00",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail menu"
+                    },
+                    "404": {
+                        "description": "Tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/artikel": {
+            "get": {
+                "tags": [
+                    "Artikel"
+                ],
+                "summary": "[Orangtua] List artikel yang dipublikasi",
+                "operationId": "4a681b7e4ff0f841c29d8231ec4dae07",
+                "responses": {
+                    "200": {
+                        "description": "List artikel"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/artikel/{id}": {
+            "get": {
+                "tags": [
+                    "Artikel"
+                ],
+                "summary": "[Orangtua] Detail artikel",
+                "operationId": "015b22a0fa7139a31ae717bb27369eb0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail artikel"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/orangtua": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Dashboard orangtua — menu harian & artikel terbaru",
+                "operationId": "dfb874af566ab4d257905647a5228aed",
+                "responses": {
+                    "200": {
+                        "description": "Data dashboard",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "menus": {
+                                            "type": "object"
+                                        },
+                                        "artikels": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/tahapan-master": {
+            "get": {
+                "tags": [
+                    "Perkembangan"
+                ],
+                "summary": "[Publik] List master tahapan perkembangan",
+                "operationId": "32e8b71500c356e406adc30134087b28",
+                "responses": {
+                    "200": {
+                        "description": "List tahapan perkembangan"
+                    }
+                }
+            }
+        },
+        "/api/admin/dashboard": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "[Admin] Statistik dashboard",
+                "operationId": "7b0019d61bd40c9910cd81eb660d9b21",
+                "responses": {
+                    "200": {
+                        "description": "Statistik",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "total_anak": {
+                                            "type": "integer"
+                                        },
+                                        "total_orangtua": {
+                                            "type": "integer"
+                                        },
+                                        "total_deteksi": {
+                                            "type": "integer"
+                                        },
+                                        "kasus_stunting": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/children": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "[Admin] List semua anak",
+                "operationId": "02744e4f658e36797eb94cd5769b0a54",
+                "responses": {
+                    "200": {
+                        "description": "List anak beserta data orangtua"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/kategori": {
+            "get": {
+                "tags": [
+                    "Kategori Artikel"
+                ],
+                "summary": "[Admin] List kategori artikel",
+                "operationId": "97d5f3fca7b9d41011097af74fa449f3",
+                "responses": {
+                    "200": {
+                        "description": "List kategori"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Kategori Artikel"
+                ],
+                "summary": "[Admin] Tambah kategori artikel",
+                "operationId": "5c9eb4588dc7c0b1a591c8ba9b0af9de",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Gizi"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Kategori ditambahkan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/kategori/{id}": {
+            "put": {
+                "tags": [
+                    "Kategori Artikel"
+                ],
+                "summary": "[Admin] Update kategori artikel",
+                "operationId": "3dbbe9460c96eca8348d6f410a90e22d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Kategori diperbarui"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Kategori Artikel"
+                ],
+                "summary": "[Admin] Hapus kategori artikel",
+                "operationId": "ce13bb985a7f4c750cd44d5e243240df",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kategori dihapus"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/nutrition": {
+            "post": {
+                "tags": [
+                    "Nutrition"
+                ],
+                "summary": "[Admin] Tambah menu nutrisi (multipart/form-data)",
+                "operationId": "bea687c85dd8523c48c30ef36ac698a3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "nutrition",
+                                    "ingredients",
+                                    "instructions",
+                                    "category"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "nutrition": {
+                                        "type": "string"
+                                    },
+                                    "ingredients": {
+                                        "type": "string"
+                                    },
+                                    "instructions": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pagi",
+                                            "siang",
+                                            "malam",
+                                            "snack"
+                                        ]
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Menu ditambahkan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/nutrition/{id}": {
+            "put": {
+                "tags": [
+                    "Nutrition"
+                ],
+                "summary": "[Admin] Update menu nutrisi",
+                "operationId": "1d48fe95c08f57c812c382645c9f2428",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pagi",
+                                            "siang",
+                                            "malam",
+                                            "snack"
+                                        ]
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Menu diperbarui"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Nutrition"
+                ],
+                "summary": "[Admin] Hapus menu nutrisi",
+                "operationId": "a8d35b6eaf3225db933528ead6996166",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Menu dihapus"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/artikel": {
+            "post": {
+                "tags": [
+                    "Artikel"
+                ],
+                "summary": "[Admin] Tambah artikel (multipart/form-data)",
+                "operationId": "202aaf77cf731074db81d744cdf8e057",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "content"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    },
+                                    "publish": {
+                                        "type": "boolean"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Artikel ditambahkan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/artikel/{id}": {
+            "put": {
+                "tags": [
+                    "Artikel"
+                ],
+                "summary": "[Admin] Update artikel",
+                "operationId": "8ebbc6915c30100aaf5427b7479a623c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Artikel diperbarui"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Artikel"
+                ],
+                "summary": "[Admin] Hapus artikel",
+                "operationId": "187bc7cc2b9a9f7122c90cd363b52917",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Artikel dihapus"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/children/{child}/perkembangan": {
+            "get": {
+                "tags": [
+                    "Perkembangan"
+                ],
+                "summary": "List tahapan perkembangan anak beserta status",
+                "operationId": "0d6f7fcfc3ce6283fd541af1615cec0a",
+                "parameters": [
+                    {
+                        "name": "child",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "kategori[]",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "Motorik",
+                                    "Bahasa",
+                                    "Gigi"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data perkembangan anak"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Perkembangan"
+                ],
+                "summary": "Simpan pencapaian tahapan perkembangan",
+                "operationId": "aa2803bd59695fe33a9fad0cc646d8fb",
+                "parameters": [
+                    {
+                        "name": "child",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tahapan_perkembangan_id",
+                                    "tanggal_pencapaian"
+                                ],
+                                "properties": {
+                                    "tahapan_perkembangan_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "tanggal_pencapaian": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-15"
+                                    },
+                                    "catatan": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pencapaian disimpan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/children/{child}/perkembangan/{id}": {
+            "put": {
+                "tags": [
+                    "Perkembangan"
+                ],
+                "summary": "Update pencapaian tahapan perkembangan",
+                "operationId": "d9e466e6960b948e6831f2f49cf9fa28",
+                "parameters": [
+                    {
+                        "name": "child",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "tanggal_pencapaian": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "catatan": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pencapaian diperbarui"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Perkembangan"
+                ],
+                "summary": "Hapus pencapaian tahapan perkembangan",
+                "operationId": "3970be28efae5ea5bc268cc640943647",
+                "parameters": [
+                    {
+                        "name": "child",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pencapaian dihapus"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/children/{child}/perkembangan": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "[Admin] Lihat perkembangan anak tertentu",
+                "operationId": "5456934aad5575bda32f42e0e50e71f0",
+                "parameters": [
+                    {
+                        "name": "child",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data perkembangan anak"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "[Admin] Simpan pencapaian untuk anak tertentu",
+                "operationId": "2e2ebb7296f67ee73e411fe33a38cbfa",
+                "parameters": [
+                    {
+                        "name": "child",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "tahapan_perkembangan_id": {
+                                        "type": "integer"
+                                    },
+                                    "tanggal_pencapaian": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "catatan": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pencapaian disimpan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "Token",
+                "description": "Enter your Sanctum API token (without the \"Bearer\" prefix)"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Registrasi, login, dan logout"
+        },
+        {
+            "name": "Children",
+            "description": "Manajemen data anak (orangtua)"
+        },
+        {
+            "name": "Perkembangan",
+            "description": "Tahapan perkembangan per anak"
+        },
+        {
+            "name": "Nutrition",
+            "description": "Rekomendasi nutrisi (admin & orangtua)"
+        },
+        {
+            "name": "Artikel",
+            "description": "Artikel kesehatan (admin & orangtua)"
+        },
+        {
+            "name": "Kategori Artikel",
+            "description": "Kategori artikel (admin)"
+        },
+        {
+            "name": "Admin",
+            "description": "Dashboard dan manajemen admin"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Dashboard orangtua"
+        }
+    ]
+}

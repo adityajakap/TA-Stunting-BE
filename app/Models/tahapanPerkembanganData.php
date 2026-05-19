@@ -12,16 +12,16 @@ class TahapanPerkembanganData extends Model
     protected $table = 'tahapan_perkembangan_data';
 
     protected $fillable = [
-        'user_id',
+        'child_id',
         'tahapan_perkembangan_id',
         'tanggal_pencapaian',
         'status',
         'catatan',
     ];
 
-    public function user()
+    public function child()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Child::class);
     }
 
     public function tahapanPerkembangan()
@@ -29,53 +29,18 @@ class TahapanPerkembanganData extends Model
         return $this->belongsTo(TahapanPerkembangan::class);
     }
 
-    /**
-     * Boot method untuk auto-set status berdasarkan umur anak
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->status = $model->calculateStatus();
-        });
-
-        static::updating(function ($model) {
-            $model->status = $model->calculateStatus();
-        });
-    }
+    // Boot method dan calculateStatus dihapus karena sekarang dihandle secara dinamis oleh DevelopmentStatusService
 
     /**
-     * Hitung status otomatis berdasarkan umur anak dan tahapan perkembangan
+     * Accessor untuk mendapatkan detail status dari service secara dinamis
+     * Akan me-return array: ['status' => ..., 'label' => ..., 'badge' => ..., 'rekomendasi' => ...]
      */
-    public function calculateStatus()
+    public function getStatusDetailAttribute()
     {
-        if (!$this->user || !$this->tahapanPerkembangan) {
-            return 'belum_tercapai';
-        }
-
-        $umurBulan = $this->user->umur_bulan;
-        $umurMinimal = $this->tahapanPerkembangan->umur_minimal_bulan;
-        $umurMaksimal = $this->tahapanPerkembangan->umur_maksimal_bulan;
-
-        // Jika umur anak sudah melewati umur maksimal tahapan, dianggap tercapai
-        if ($umurBulan >= $umurMaksimal) {
-            return 'tercapai';
-        }
-
-        // Jika umur anak dalam rentang tahapan, dianggap tercapai
-        if ($umurBulan >= $umurMinimal && $umurBulan <= $umurMaksimal) {
-            return 'tercapai';
-        }
-
-        return 'belum_tercapai';
-    }
-
-    /**
-     * Accessor untuk menampilkan status yang user-friendly
-     */
-    public function getStatusDisplayAttribute()
-    {
-        return $this->status === 'tercapai' ? 'Tercapai ✓' : 'Belum Tercapai';
+        return \App\Services\DevelopmentStatusService::evaluate(
+            $this->child,
+            $this->tahapanPerkembangan,
+            $this->tanggal_pencapaian
+        );
     }
 }

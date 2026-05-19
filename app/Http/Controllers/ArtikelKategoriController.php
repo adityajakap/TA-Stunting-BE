@@ -9,14 +9,8 @@ class ArtikelKategoriController extends Controller
 {
     public function index()
     {
-        // Ini saja cukup, tanpa perlu whereNull('deleted_at')
         $kategoris = ArtikelKategori::all();
-        return view('admin.artikel.kategori.index', compact('kategoris'));
-    }
-
-    public function create()
-    {
-        return view('admin.artikel.kategori.create');
+        return response()->json($kategoris);
     }
 
     public function store(Request $request)
@@ -25,16 +19,16 @@ class ArtikelKategoriController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        ArtikelKategori::create([
+        $kategori = ArtikelKategori::create([
             'name' => $request->name,
         ]);
 
-        return redirect()->route('admin.artikel.kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
+        return response()->json(['message' => 'Kategori berhasil ditambahkan.', 'data' => $kategori], 201);
     }
 
-    public function edit(ArtikelKategori $kategori)
+    public function show(ArtikelKategori $kategori)
     {
-        return view('admin.artikel.kategori.edit', compact('kategori'));
+        return response()->json($kategori);
     }
 
     public function update(Request $request, ArtikelKategori $kategori)
@@ -47,15 +41,12 @@ class ArtikelKategoriController extends Controller
             'name' => $request->name,
         ]);
 
-        return redirect()->route('admin.artikel.kategori.index')->with('success', 'Kategori berhasil diperbarui.');
+        return response()->json(['message' => 'Kategori berhasil diperbarui.', 'data' => $kategori]);
     }
 
     public function destroy(ArtikelKategori $kategori)
     {
-        $kategori->delete(); // Soft delete
-    
-        return redirect()->route('admin.artikel.kategori.index')->with('success', 'Kategori berhasil dihapus.');
-
-         
+        $kategori->delete();
+        return response()->json(['message' => 'Kategori berhasil dihapus.']);
     }
 }

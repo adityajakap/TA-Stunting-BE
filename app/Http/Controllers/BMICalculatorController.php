@@ -12,14 +12,13 @@ class BMICalculatorController extends Controller
 {
     public function showBmiData()
     {
-        // Get the authenticated user
-        $user = Auth::user();
+        $childId = session('selected_child_id');
 
-        // Fetch the BMI records associated with the authenticated user
-        $bmiRecords = Bmi::where('user_id', $user->id)->get();
+        // Fetch the BMI records associated with the selected child
+        $bmiRecords = Bmi::where('child_id', $childId)->get();
 
         // Ambil data terakhir
-    $lastBmi = Bmi::where('user_id', $user->id)->latest('created_at')->first();
+    $lastBmi = Bmi::where('child_id', $childId)->latest('created_at')->first();
 
 
     $estimatedCalories = null;
@@ -111,7 +110,7 @@ class BMICalculatorController extends Controller
     {
         $tinggiCm = $request->input('tinggi'); // ✅ untuk BMR
         $tinggi = $tinggiCm / 100;             // ✅ untuk BMI
-        $user = Auth::user();  // Get the authenticated user
+        $childId = session('selected_child_id');
         $gender = strtolower($request->input('gender'));
         $tinggi = $request->input('tinggi') / 100;
         $berat = $request->input('berat');
@@ -152,7 +151,7 @@ class BMICalculatorController extends Controller
         $kalori = round($bmr * $factor);
 
         Bmi::create([
-            'user_id' => $user->id,  // Associate the BMI with the authenticated user
+            'child_id' => $childId,
             'tanggal' => $tanggal,
             'tinggi' => $request->input('tinggi'),
             'berat' => $berat,
@@ -195,7 +194,8 @@ class BMICalculatorController extends Controller
 
     public function deleteRow($id)
 {
-   $bmiRecord = Bmi::findOrFail($id);
+   $bmiRecord = Bmi::with('child')->findOrFail($id);
+   if ($bmiRecord->child->user_id !== Auth::id()) abort(403);
     $bmiRecord->delete();
 
     return redirect()->route('bmi');

@@ -12,7 +12,7 @@ class Bmi extends Model
     protected $table = 'bmi';
 
     protected $fillable = [
-        'user_id',
+        'child_id',
         'tanggal',
         'tinggi',
         'berat',
@@ -22,10 +22,10 @@ class Bmi extends Model
     ];
 
     /**
-     * Relasi ke model User
+     * Relasi ke model Child
      */
-    public function user()
+    public function child()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Child::class);
     }
 }

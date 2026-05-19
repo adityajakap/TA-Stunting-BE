@@ -7,14 +7,9 @@ use App\Models\NutritionRecommendation;
 
 class NutritionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
-        }
-
-        // Allow simple search from the admin search modal
-        $search = request('search');
+        $search = $request->input('search');
 
         $query = NutritionRecommendation::query();
 
@@ -26,27 +21,24 @@ class NutritionController extends Controller
             });
         }
 
-        // Paginate so the view can call ->links()
-        $menus = $query->orderBy('created_at', 'desc')->paginate(12)->withQueryString();
-
-        return view('admin.nutrition.index', compact('menus'));
-    }
-
-    public function create()
-    {
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
+        if ($request->has('kategori')) {
+            $query->whereIn('category', (array)$request->input('kategori'));
         }
 
-        return view('admin.nutrition.create');
+        if ($request->has('paginate')) {
+            return response()->json($query->orderBy('created_at', 'desc')->paginate($request->input('paginate')));
+        }
+
+        return response()->json($query->orderBy('created_at', 'desc')->get());
+    }
+
+    public function show($id)
+    {
+        return response()->json(NutritionRecommendation::findOrFail($id));
     }
 
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
-        }
-
         $request->validate([
             'name' => 'required',
             'nutrition' => 'required',
@@ -62,27 +54,13 @@ class NutritionController extends Controller
             $data['image'] = $request->file('image')->store('uploads/nutrition', 'public');
         }
 
-        NutritionRecommendation::create($data);
+        $menu = NutritionRecommendation::create($data);
 
-        return redirect()->route('admin.nutrition.index')->with('success', 'Menu berhasil ditambahkan');
-    }
-
-    public function edit($id)
-    {
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
-        }
-
-        $menu = NutritionRecommendation::findOrFail($id);
-        return view('admin.nutrition.edit', compact('menu'));
+        return response()->json(['message' => 'Menu berhasil ditambahkan', 'data' => $menu], 201);
     }
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
-        }
-
         $menu = NutritionRecommendation::findOrFail($id);
 
         $request->validate([
@@ -102,41 +80,14 @@ class NutritionController extends Controller
 
         $menu->update($data);
 
-        return redirect()->route('admin.nutrition.index')->with('success', 'Menu berhasil diperbarui');
+        return response()->json(['message' => 'Menu berhasil diperbarui', 'data' => $menu]);
     }
 
     public function destroy($id)
     {
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
-        }
-
         $menu = NutritionRecommendation::findOrFail($id);
         $menu->delete();
 
-        return redirect()->route('admin.nutrition.index')->with('success', 'Menu berhasil dihapus');
-    }
-
-    public function user(Request $request)
-    {
-        if (auth()->user()->role !== 'orangtua') {
-            abort(403, 'Unauthorized');
-        }
-
-        $kategoriList = ['pagi', 'siang', 'malam', 'snack'];
-        $kategoris = collect($kategoriList)->map(function($kategori) {
-            return (object)[
-                'id' => $kategori,
-                'name' => ucfirst($kategori)
-            ];
-        });
-
-        $kategoriIds = $request->input('kategori', []);
-
-        $menus = NutritionRecommendation::when($kategoriIds, function ($query) use ($kategoriIds) {
-            return $query->whereIn('category', $kategoriIds);
-        })->get();
-
-        return view('orangtua.nutritionUs.index', compact('menus', 'kategoris', 'kategoriIds'));
+        return response()->json(['message' => 'Menu berhasil dihapus']);
     }
 }

@@ -22,15 +22,14 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'nama_anak' => 'required|string|max:255',
-            'tanggal_lahir' => 'required|date|before_or_equal:today',
+            'nama_lengkap' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|min:6|confirmed',
         ]);
 
         User::create([
-            'nama_anak' => $request->nama_anak,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            // keep nik_anak nullable in DB but we no longer require it on register
+            'nama_lengkap' => $request->nama_lengkap,
+            'username' => $request->username,
             'password' => Hash::make($request->password),
             'role' => 'orangtua', 
         ]);
@@ -40,18 +39,12 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Backwards-compatible: try to authenticate using nama_anak first; if that fails,
-        // attempt using nik_anak with the same input (so existing accounts with NIK still work).
-        $identifier = $request->input('nama_anak');
+        $identifier = $request->input('username');
         $password = $request->input('password');
 
-        $attemptByName = Auth::attempt(['nama_anak' => $identifier, 'password' => $password]);
-        $attemptByNik = false;
-        if (! $attemptByName) {
-            $attemptByNik = Auth::attempt(['nik_anak' => $identifier, 'password' => $password]);
-        }
-
-        if ($attemptByName || $attemptByNik) {
+        $attemptByUsername = Auth::attempt(['username' => $identifier, 'password' => $password]);
+        
+        if ($attemptByUsername) {
             $user = Auth::user();
 
             // Jika ingin pakai role:
@@ -67,7 +60,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'login' => 'Nama Anak atau password salah.',
+            'login' => 'Username atau password salah.',
         ]);
     }
 
