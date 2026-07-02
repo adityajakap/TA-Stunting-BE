@@ -52,32 +52,18 @@ class DetectionController extends Controller
 
         $child = Child::findOrFail($validated['child_id']);
 
-        $filePath = $validated['jenis_kelamin'] === 'L'
-            ? storage_path('app/zscores_boys.json')
-            : storage_path('app/zscores_girls.json');
-
-        if (!file_exists($filePath)) {
-            return back()->with('error', 'File WHO tidak ditemukan.');
+        try {
+            $result = \App\Services\StuntingDetectionService::calculateZScoreAndStatus(
+                $validated['umur'],
+                $validated['jenis_kelamin'],
+                $validated['tinggi_badan']
+            );
+            $z_score = $result['z_score'];
+            $status = $result['status'];
+            $umur = (int) $validated['umur'];
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        $data = json_decode(file_get_contents($filePath), true);
-        if (!$data || !is_array($data)) {
-            return back()->with('error', 'Gagal membaca file WHO.');
-        }
-
-        $umur = (int) $validated['umur'];
-        $who_data = collect($data)->first(fn($item) => (int) $item['Month'] === $umur);
-
-        if (!$who_data) {
-            return back()->with('error', 'Data WHO tidak tersedia untuk umur ini.');
-        }
-
-        $median = $who_data['M'] ?? 0;
-        $sd = $who_data['SD'] ?? 1;
-        $z_score = ($validated['tinggi_badan'] - $median) / $sd;
-
-        // Hanya dua status yang diperlukan: 'Stunting' bila z-score < -2, sisanya 'Normal'
-        $status = $z_score < -2 ? 'Stunting' : 'Normal';
 
         Detection::create([
             'child_id' => $child->id,
@@ -119,32 +105,18 @@ class DetectionController extends Controller
             'tinggi_badan' => 'required|numeric',
         ]);
 
-        $filePath = $validated['jenis_kelamin'] === 'L'
-            ? storage_path('app/zscores_boys.json')
-            : storage_path('app/zscores_girls.json');
-
-        if (!file_exists($filePath)) {
-            return back()->with('error', 'File WHO tidak ditemukan.');
+        try {
+            $result = \App\Services\StuntingDetectionService::calculateZScoreAndStatus(
+                $validated['umur'],
+                $validated['jenis_kelamin'],
+                $validated['tinggi_badan']
+            );
+            $z_score = $result['z_score'];
+            $status = $result['status'];
+            $umur = (int) $validated['umur'];
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        $data = json_decode(file_get_contents($filePath), true);
-        if (!$data || !is_array($data)) {
-            return back()->with('error', 'Gagal membaca file WHO.');
-        }
-
-        $umur = (int) $validated['umur'];
-        $who_data = collect($data)->first(fn($item) => (int) $item['Month'] === $umur);
-
-        if (!$who_data) {
-            return back()->with('error', 'Data WHO tidak tersedia untuk umur ini.');
-        }
-
-        $median = $who_data['M'] ?? 0;
-        $sd = $who_data['SD'] ?? 1;
-        $z_score = ($validated['tinggi_badan'] - $median) / $sd;
-
-        // Hanya dua status yang diperlukan: 'Stunting' bila z-score < -2, sisanya 'Normal'
-        $status = $z_score < -2 ? 'Stunting' : 'Normal';
 
         $child = Child::findOrFail(session('selected_child_id'));
 

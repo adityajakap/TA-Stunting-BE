@@ -19,6 +19,8 @@ class Bmi extends Model
         'bmi',
         'status',
         'gender',
+        'usia',
+        'activity_level',
     ];
 
     /**

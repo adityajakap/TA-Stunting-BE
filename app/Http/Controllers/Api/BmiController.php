@@ -82,6 +82,7 @@ class BmiController extends Controller
             'activity_level' => $validated['activity_level'],
             'bmi'            => round($bmi_value, 2),
             'status'         => $status,
+            'tanggal'        => now()->toDateString(),
         ]);
 
         return response()->json($bmi, 201);
