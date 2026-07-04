@@ -45,6 +45,8 @@ class NutritionController extends Controller
             'ingredients' => 'required',
             'instructions' => 'required',
             'category' => 'required|in:pagi,siang,malam,snack',
+            'kategori_stunting' => 'required|in:Stunting,Normal',
+            'rentang_umur' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
@@ -69,6 +71,8 @@ class NutritionController extends Controller
             'ingredients' => 'required',
             'instructions' => 'required',
             'category' => 'required|in:pagi,siang,malam,snack',
+            'kategori_stunting' => 'required|in:Stunting,Normal',
+            'rentang_umur' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 

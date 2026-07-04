@@ -14,6 +14,7 @@ class Child extends Model
         'user_id',
         'nama_lengkap_anak',
         'tanggal_lahir',
+        'jenis_kelamin',
         'nik_anak'
     ];
 

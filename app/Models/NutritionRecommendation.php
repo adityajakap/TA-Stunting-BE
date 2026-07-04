@@ -10,6 +10,6 @@ class NutritionRecommendation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'nutrition', 'ingredients', 'instructions', 'category', 'image'
+        'name', 'nutrition', 'ingredients', 'instructions', 'category', 'kategori_stunting', 'rentang_umur', 'image'
     ];
 }
