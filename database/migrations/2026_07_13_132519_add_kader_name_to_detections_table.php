@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('detections', function (Blueprint $table) {
-            if (!Schema::hasColumn('detections', 'added_by')) {
-                $table->enum('added_by', ['orangtua', 'kader'])->default('orangtua')->after('status');
-            }
+            $table->string('kader_name')->nullable();
         });
     }
 
@@ -24,9 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('detections', function (Blueprint $table) {
-            if (Schema::hasColumn('detections', 'added_by')) {
-                $table->dropColumn('added_by');
-            }
+            //
         });
     }
 };

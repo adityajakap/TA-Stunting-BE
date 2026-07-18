@@ -18,7 +18,12 @@ class DetectionController extends Controller
 
     public function kmsData(Request $request, $childId)
     {
-        $child = $request->user()->children()->findOrFail($childId);
+        $user = $request->user();
+        if ($user->role === 'kader' || $user->role === 'admin') {
+            $child = \App\Models\Child::findOrFail($childId);
+        } else {
+            $child = $user->children()->findOrFail($childId);
+        }
         
         $filePath = $child->jenis_kelamin === 'L'
             ? storage_path('app/zscores_boys.json')
@@ -103,7 +108,7 @@ class DetectionController extends Controller
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized.'], 403);
         }
-        $data = Detection::with('child.user')->latest()->get();
+        $data = Detection::has('child')->with('child.user')->where('umur', '<=', 60)->latest()->get();
         return response()->json($data);
     }
 
@@ -159,5 +164,26 @@ class DetectionController extends Controller
         ]);
 
         return response()->json($detection, 201);
+    }
+
+    /**
+     * Export PDF laporan KMS / Deteksi Stunting anak.
+     */
+    public function exportPdf(Request $request, $childId)
+    {
+        // Authorization check: strictly for admin/kader
+        $user = $request->user();
+        if (!in_array($user->role, ['admin', 'kader'])) {
+            return response()->json(['message' => 'Unauthorized. Fitur cetak hanya untuk admin/kader.'], 403);
+        }
+
+        $child = \App\Models\Child::findOrFail($childId);
+
+        $detections = Detection::where('child_id', $child->id)
+            ->orderBy('umur', 'asc')
+            ->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.deteksi', compact('child', 'detections'));
+        return $pdf->download('Laporan_KMS_' . str_replace(' ', '_', $child->nama_lengkap_anak) . '.pdf');
     }
 }
