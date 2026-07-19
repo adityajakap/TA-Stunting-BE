@@ -11,9 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('detections', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('bmi');
     }
 
     /**
@@ -21,12 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('detections', function (Blueprint $table) {
-            //
-        });
+        // Not necessary for this feature removal.
     }
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> ccd89a1fced35046f85d2cb1c2c6c394b5cfafcf

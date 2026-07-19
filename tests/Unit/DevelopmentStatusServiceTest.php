@@ -101,4 +101,100 @@ class DevelopmentStatusServiceTest extends TestCase
         $this->assertEquals('terlambat_evaluasi', $result['status']);
         $this->assertEquals('Terlambat / Perlu evaluasi', $result['label']);
     }
+    /**
+     * Test saat anak belum mencapai milestone dan umur < minimal_bulan
+     */
+    public function test_evaluate_not_achieved_belum_waktunya()
+    {
+        $child = new Child();
+        $child->tanggal_lahir = '2023-01-01';
+        
+        $tahapan = new TahapanPerkembangan();
+        $tahapan->umur_minimal_bulan = 12;
+        $tahapan->umur_maksimal_bulan = 18;
+        $tahapan->batas_evaluasi_bulan = 24;
+
+        // Umur sekarang disimulasikan: 1 November 2023 (10 bulan, kurang dari 12)
+        Carbon::setTestNow(Carbon::parse('2023-11-01'));
+
+        // Parameter ketiga adalah null karena belum tercapai
+        $result = DevelopmentStatusService::evaluate($child, $tahapan, null);
+
+        $this->assertEquals('belum_waktunya', $result['status']);
+        $this->assertEquals('Belum waktunya', $result['label']);
+        
+        Carbon::setTestNow(); // reset waktu kembali ke asli
+    }
+
+    /**
+     * Test saat anak belum mencapai milestone dan umur pas di dalam rentang
+     */
+    public function test_evaluate_not_achieved_belum_rentang()
+    {
+        $child = new Child();
+        $child->tanggal_lahir = '2023-01-01';
+        
+        $tahapan = new TahapanPerkembangan();
+        $tahapan->umur_minimal_bulan = 12;
+        $tahapan->umur_maksimal_bulan = 18;
+        $tahapan->batas_evaluasi_bulan = 24;
+
+        // Umur sekarang disimulasikan: 1 April 2024 (15 bulan, pas di rentang 12-18)
+        Carbon::setTestNow(Carbon::parse('2024-04-01'));
+
+        $result = DevelopmentStatusService::evaluate($child, $tahapan, null);
+
+        $this->assertEquals('belum_rentang', $result['status']);
+        $this->assertEquals('Belum tercapai, masih dalam rentang', $result['label']);
+        
+        Carbon::setTestNow();
+    }
+
+    /**
+     * Test saat anak belum mencapai milestone dan umur sudah melebihi maksimal tapi belum kritis
+     */
+    public function test_evaluate_not_achieved_belum_pantau()
+    {
+        $child = new Child();
+        $child->tanggal_lahir = '2023-01-01';
+        
+        $tahapan = new TahapanPerkembangan();
+        $tahapan->umur_minimal_bulan = 12;
+        $tahapan->umur_maksimal_bulan = 18;
+        $tahapan->batas_evaluasi_bulan = 24;
+
+        // Umur sekarang disimulasikan: 1 November 2024 (22 bulan, di atas 18 tapi belum 24)
+        Carbon::setTestNow(Carbon::parse('2024-11-01'));
+
+        $result = DevelopmentStatusService::evaluate($child, $tahapan, null);
+
+        $this->assertEquals('belum_pantau', $result['status']);
+        $this->assertEquals('Belum tercapai, perlu dipantau', $result['label']);
+        
+        Carbon::setTestNow();
+    }
+
+    /**
+     * Test saat anak belum mencapai milestone dan umur sudah melewati batas evaluasi dokter
+     */
+    public function test_evaluate_not_achieved_belum_evaluasi()
+    {
+        $child = new Child();
+        $child->tanggal_lahir = '2023-01-01';
+        
+        $tahapan = new TahapanPerkembangan();
+        $tahapan->umur_minimal_bulan = 12;
+        $tahapan->umur_maksimal_bulan = 18;
+        $tahapan->batas_evaluasi_bulan = 24;
+
+        // Umur sekarang disimulasikan: 1 Maret 2025 (26 bulan, sudah lewat batas 24)
+        Carbon::setTestNow(Carbon::parse('2025-03-01'));
+
+        $result = DevelopmentStatusService::evaluate($child, $tahapan, null);
+
+        $this->assertEquals('belum_evaluasi', $result['status']);
+        $this->assertEquals('Belum tercapai, perlu evaluasi', $result['label']);
+        
+        Carbon::setTestNow();
+    }
 }

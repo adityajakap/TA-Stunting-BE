@@ -9,5 +9,10 @@ class SkdnTarget extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['month', 'year', 's_value'];
+    protected $fillable = [
+        'posyandu_name',
+        'month',
+        'year',
+        's_value'
+    ];
 }

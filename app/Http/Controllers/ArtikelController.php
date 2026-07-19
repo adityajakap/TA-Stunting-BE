@@ -32,6 +32,8 @@ class ArtikelController extends Controller
             'title' => 'required',
             'content' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'kategoris' => 'nullable|array',
+            'kategoris.*' => 'string',
         ]);
 
         $slug = Str::slug($request->title);
@@ -63,6 +65,15 @@ class ArtikelController extends Controller
 
         $artikel = Artikel::create($data);
 
+        if ($request->has('kategoris')) {
+            $kategoriIds = [];
+            foreach ($request->kategoris as $catName) {
+                $kat = \App\Models\ArtikelKategori::firstOrCreate(['name' => $catName]);
+                $kategoriIds[] = $kat->id;
+            }
+            $artikel->kategoris()->sync($kategoriIds);
+        }
+
         return response()->json(['message' => 'Artikel berhasil ditambahkan!', 'data' => $artikel], 201);
     }
 
@@ -84,6 +95,8 @@ class ArtikelController extends Controller
             'title' => 'required',
             'content' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'kategoris' => 'nullable|array',
+            'kategoris.*' => 'string',
         ]);
 
         $artikel = Artikel::findOrFail($id);
@@ -105,6 +118,17 @@ class ArtikelController extends Controller
         }
 
         $artikel->update($data);
+
+        if ($request->has('kategoris')) {
+            $kategoriIds = [];
+            foreach ($request->kategoris as $catName) {
+                $kat = \App\Models\ArtikelKategori::firstOrCreate(['name' => $catName]);
+                $kategoriIds[] = $kat->id;
+            }
+            $artikel->kategoris()->sync($kategoriIds);
+        } else {
+            $artikel->kategoris()->detach();
+        }
 
         return response()->json(['message' => 'Artikel berhasil diperbarui!', 'data' => $artikel]);
     }

@@ -10,12 +10,7 @@ class ChildController extends Controller
 {
     public function index(Request $request)
     {
-        // Menyembunyikan anak yang sudah lewat 5 tahun (60 bulan)
-        $limitDate = \Carbon\Carbon::now()->subMonths(60)->toDateString();
-        
-        $children = $request->user()->children()
-            ->where('tanggal_lahir', '>=', $limitDate)
-            ->get();
+        $children = $request->user()->children()->get();
             
         return response()->json($children);
     }
@@ -28,6 +23,18 @@ class ChildController extends Controller
             'jenis_kelamin'     => 'required|in:L,P',
             'nik_anak'          => 'nullable|string|max:20',
         ]);
+
+        $newDate = \Carbon\Carbon::parse($request->tanggal_lahir);
+        $existingChildren = $request->user()->children()->get();
+        foreach ($existingChildren as $existingChild) {
+            $existingDate = \Carbon\Carbon::parse($existingChild->tanggal_lahir);
+            if ($newDate->diffInMonths($existingDate) < 9) {
+                return response()->json([
+                    'message' => 'Jarak usia antar anak minimal 9 bulan. Pendaftaran ditolak.',
+                    'errors' => ['tanggal_lahir' => ['Jarak usia antar anak minimal 9 bulan.']]
+                ], 422);
+            }
+        }
 
         $child = $request->user()->children()->create([
             'nama_lengkap_anak' => $request->nama_lengkap_anak,
@@ -55,6 +62,20 @@ class ChildController extends Controller
             'jenis_kelamin'     => 'sometimes|in:L,P',
             'nik_anak'          => 'nullable|string|max:20',
         ]);
+
+        if ($request->has('tanggal_lahir')) {
+            $newDate = \Carbon\Carbon::parse($request->tanggal_lahir);
+            $existingChildren = $request->user()->children()->where('id', '!=', $id)->get();
+            foreach ($existingChildren as $existingChild) {
+                $existingDate = \Carbon\Carbon::parse($existingChild->tanggal_lahir);
+                if ($newDate->diffInMonths($existingDate) < 9) {
+                    return response()->json([
+                        'message' => 'Jarak usia antar anak minimal 9 bulan. Pendaftaran ditolak.',
+                        'errors' => ['tanggal_lahir' => ['Jarak usia antar anak minimal 9 bulan.']]
+                    ], 422);
+                }
+            }
+        }
 
         $child->update($request->only(['nama_lengkap_anak', 'tanggal_lahir', 'jenis_kelamin', 'nik_anak']));
         return response()->json($child);

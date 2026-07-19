@@ -5,10 +5,10 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChildController;
 use App\Http\Controllers\Api\DetectionController;
 use App\Http\Controllers\Api\TahapanPerkembanganController;
-use App\Http\Controllers\Api\BmiController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\SkdnController;
 use App\Http\Controllers\Api\NtobController;
+use App\Http\Controllers\Api\SkdnTargetController;
 use App\Http\Controllers\NutritionController;
 use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\ArtikelKategoriController;
@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Detection (per child)
     Route::get('children/{child}/detections',     [DetectionController::class, 'index']);
+    Route::get('children/{child}/kms-data',       [DetectionController::class, 'kmsData']);
     Route::post('children/{child}/detections',    [DetectionController::class, 'store']);
     Route::delete('children/{child}/detections/{id}', [DetectionController::class, 'destroy']);
 
@@ -56,10 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('children/{child}/perkembangan/{id}',      [TahapanPerkembanganController::class, 'update']);
     Route::delete('children/{child}/perkembangan/{id}',   [TahapanPerkembanganController::class, 'destroy']);
 
-    // BMI (per child)
-    Route::get('children/{child}/bmi',            [BmiController::class, 'index']);
-    Route::post('children/{child}/bmi',           [BmiController::class, 'store']);
-    Route::delete('children/{child}/bmi/{id}',    [BmiController::class, 'destroy']);
+    // Skdn Targets
+    Route::get('/skdn-target', [SkdnTargetController::class, 'show']);
+    Route::post('/skdn-target', [SkdnTargetController::class, 'store']);
 
     /*
     |--------------------------------------------------------------------------
@@ -71,7 +71,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/children',                           [AdminController::class, 'children']);
         Route::get('/detections',                         [DetectionController::class, 'adminIndex']);
         Route::post('/detections',                        [DetectionController::class, 'adminStore']);
+        Route::get('/children/{child}/detections/pdf',    [DetectionController::class, 'exportPdf']);
         Route::get('/children/{child}/perkembangan',      [TahapanPerkembanganController::class, 'adminShow']);
+        Route::get('/children/{child}/perkembangan/pdf',  [TahapanPerkembanganController::class, 'exportPdf']);
         Route::post('/children/{child}/perkembangan',     [TahapanPerkembanganController::class, 'adminStore']);
         
         Route::get('/skdn/{month}/{year}/pdf',            [SkdnController::class, 'exportPdf']);
@@ -82,8 +84,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('kategori', ArtikelKategoriController::class);
     });
 
-    Route::get('/skdn-target', [SkdnController::class, 'getTarget']);
-    Route::post('/skdn-target', [SkdnController::class, 'storeTarget']);
 
     /*
     |--------------------------------------------------------------------------
