@@ -29,8 +29,4 @@ return new class extends Migration
             }
         });
     }
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> ccd89a1fced35046f85d2cb1c2c6c394b5cfafcf

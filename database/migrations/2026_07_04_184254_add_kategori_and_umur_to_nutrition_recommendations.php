@@ -26,8 +26,4 @@ return new class extends Migration
             $table->dropColumn(['kategori_stunting', 'rentang_umur']);
         });
     }
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> ccd89a1fced35046f85d2cb1c2c6c394b5cfafcf

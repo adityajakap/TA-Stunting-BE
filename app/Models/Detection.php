@@ -19,10 +19,7 @@ class Detection extends Model
         'z_score',
         'status',
         'added_by',
-<<<<<<< HEAD
         'kader_name',
-=======
->>>>>>> ccd89a1fced35046f85d2cb1c2c6c394b5cfafcf
     ];
 
     public function child()
