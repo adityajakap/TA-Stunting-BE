@@ -18,6 +18,8 @@ class Detection extends Model
         'tinggi_badan',
         'z_score',
         'status',
+        'added_by',
+        'kader_name',
     ];
 
     public function child()

@@ -10,10 +10,19 @@ class Child extends Model
 {
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::addGlobalScope('age_limit', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $limitDate = \Carbon\Carbon::now()->subMonths(60)->toDateString();
+            $builder->where('tanggal_lahir', '>=', $limitDate);
+        });
+    }
+
     protected $fillable = [
         'user_id',
         'nama_lengkap_anak',
         'tanggal_lahir',
+        'jenis_kelamin',
         'nik_anak'
     ];
 

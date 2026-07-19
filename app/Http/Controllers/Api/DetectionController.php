@@ -16,6 +16,36 @@ class DetectionController extends Controller
         return response()->json($data);
     }
 
+    public function kmsData(Request $request, $childId)
+    {
+        $user = $request->user();
+        if ($user->role === 'kader' || $user->role === 'admin') {
+            $child = \App\Models\Child::findOrFail($childId);
+        } else {
+            $child = $user->children()->findOrFail($childId);
+        }
+        
+        $filePath = $child->jenis_kelamin === 'L'
+            ? storage_path('app/zscores_boys.json')
+            : storage_path('app/zscores_girls.json');
+
+        if (!file_exists($filePath)) {
+            return response()->json(['message' => 'File WHO tidak ditemukan.'], 422);
+        }
+
+        $who_data = json_decode(file_get_contents($filePath), true);
+
+        $detections = Detection::where('child_id', $child->id)
+            ->orderBy('umur', 'asc')
+            ->get(['umur', 'tinggi_badan', 'created_at']);
+
+        return response()->json([
+            'gender' => $child->jenis_kelamin,
+            'who' => $who_data,
+            'history' => $detections
+        ]);
+    }
+
     public function store(Request $request, $childId)
     {
         $child = $request->user()->children()->findOrFail($childId);
@@ -57,6 +87,7 @@ class DetectionController extends Controller
             'tinggi_badan'  => $validated['tinggi_badan'],
             'z_score'       => round($z_score, 2),
             'status'        => $status,
+            'added_by'      => 'orangtua',
         ]);
 
         return response()->json($detection, 201);
@@ -77,7 +108,7 @@ class DetectionController extends Controller
         if ($request->user()->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized.'], 403);
         }
-        $data = Detection::with('child.user')->latest()->get();
+        $data = Detection::has('child')->with('child.user')->where('umur', '<=', 60)->latest()->get();
         return response()->json($data);
     }
 
@@ -90,15 +121,18 @@ class DetectionController extends Controller
 
         $validated = $request->validate([
             'child_id'     => 'required|exists:children,id',
-            'umur'         => 'required|integer',
-            'jenis_kelamin'=> 'required|in:L,P',
             'berat_badan'  => 'required|numeric',
             'tinggi_badan' => 'required|numeric',
+            'kader_name'   => 'required|string',
         ]);
 
         $child = Child::findOrFail($validated['child_id']);
+        
+        $tanggal_lahir = \Carbon\Carbon::parse($child->tanggal_lahir);
+        $umur = (int) $tanggal_lahir->diffInMonths(\Carbon\Carbon::now());
+        $jenis_kelamin = $child->jenis_kelamin ?? 'L';
 
-        $filePath = $validated['jenis_kelamin'] === 'L'
+        $filePath = $jenis_kelamin === 'L'
             ? storage_path('app/zscores_boys.json')
             : storage_path('app/zscores_girls.json');
 
@@ -107,7 +141,6 @@ class DetectionController extends Controller
         }
 
         $data = json_decode(file_get_contents($filePath), true);
-        $umur = (int) $validated['umur'];
         $who_data = collect($data)->first(fn($item) => (int) $item['Month'] === $umur);
 
         if (!$who_data) {
@@ -123,11 +156,13 @@ class DetectionController extends Controller
             'child_id'      => $child->id,
             'nama'          => $child->nama_lengkap_anak,
             'umur'          => $umur,
-            'jenis_kelamin' => $validated['jenis_kelamin'],
+            'jenis_kelamin' => $jenis_kelamin,
             'berat_badan'   => $validated['berat_badan'],
             'tinggi_badan'  => $validated['tinggi_badan'],
             'z_score'       => round($z_score, 2),
             'status'        => $status,
+            'added_by'      => 'kader',
+            'kader_name'    => $validated['kader_name'],
         ]);
 
         return response()->json($detection, 201);
