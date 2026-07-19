@@ -1,0 +1,593 @@
+{
+	"info": {
+		"_postman_id": "4b6b6c0e-4c8d-4f12-9c3f-3a2b1c4d5e6f",
+		"name": "TA-Stunting API",
+		"description": "Koleksi endpoint terstruktur berdasarkan Akses Role",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register Akun",
+					"request": {
+						"method": "POST",
+						"header": [ { "key": "Accept", "value": "application/json" } ],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nama_lengkap\": \"Bambang Pamungkas\",\n  \"username\": \"bambangpamungkas\",\n  \"password\": \"password12345\",\n  \"password_confirmation\": \"password12345\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/register", "host": [ "{{base_url}}" ], "path": [ "register" ] }
+					}
+				},
+				{
+					"name": "Login Akun",
+					"request": {
+						"method": "POST",
+						"header": [ { "key": "Accept", "value": "application/json" } ],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"bambangpamungkas\",\n  \"password\": \"password12345\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/login", "host": [ "{{base_url}}" ], "path": [ "login" ] }
+					}
+				},
+				{
+					"name": "Get Profile (Me)",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+						"method": "GET",
+						"header": [ { "key": "Accept", "value": "application/json" } ],
+						"url": { "raw": "{{base_url}}/me", "host": [ "{{base_url}}" ], "path": [ "me" ] }
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+						"method": "POST",
+						"header": [ { "key": "Accept", "value": "application/json" } ],
+						"url": { "raw": "{{base_url}}/logout", "host": [ "{{base_url}}" ], "path": [ "logout" ] }
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Orang Tua",
+			"item": [
+				{
+					"name": "Dashboard Orangtua",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+						"method": "GET",
+						"header": [ { "key": "Accept", "value": "application/json" } ],
+						"url": { "raw": "{{base_url}}/dashboard/orangtua", "host": [ "{{base_url}}" ], "path": [ "dashboard", "orangtua" ] }
+					}
+				},
+				{
+					"name": "Kelola Data Anak",
+					"item": [
+						{
+							"name": "Lihat Daftar Anak (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/children", "host": [ "{{base_url}}" ], "path": [ "children" ] }
+							}
+						},
+						{
+							"name": "Detail Anak (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/children/1", "host": [ "{{base_url}}" ], "path": [ "children", "1" ] }
+							}
+						},
+						{
+							"name": "Tambah Anak Baru (POST)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "POST",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nama_lengkap_anak\": \"Budi S\",\n  \"tanggal_lahir\": \"2023-05-17\",\n  \"nik_anak\": \"1234567890123457\",\n  \"jenis_kelamin\": \"L\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/children", "host": [ "{{base_url}}" ], "path": [ "children" ] }
+							}
+						},
+						{
+							"name": "Update Data Anak (PUT)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "PUT",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nama_lengkap_anak\": \"Budi Sudarsono Update\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/children/1", "host": [ "{{base_url}}" ], "path": [ "children", "1" ] }
+							}
+						},
+						{
+							"name": "Hapus Data Anak (DELETE)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "DELETE",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/children/1", "host": [ "{{base_url}}" ], "path": [ "children", "1" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Deteksi KMS",
+					"item": [
+						{
+							"name": "Lihat Riwayat KMS Anak (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/children/1/kms-data", "host": [ "{{base_url}}" ], "path": [ "children", "1", "kms-data" ] }
+							}
+						},
+						{
+							"name": "Lihat Tabel Deteksi Anak (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/children/1/detections", "host": [ "{{base_url}}" ], "path": [ "children", "1", "detections" ] }
+							}
+						},
+						{
+							"name": "Input Deteksi (POST)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "POST",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"umur\": 12,\n  \"jenis_kelamin\": \"L\",\n  \"berat_badan\": 8.5,\n  \"tinggi_badan\": 75.0\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/children/1/detections", "host": [ "{{base_url}}" ], "path": [ "children", "1", "detections" ] }
+							}
+						},
+						{
+							"name": "Hapus Deteksi (DELETE)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "DELETE",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/children/1/detections/1", "host": [ "{{base_url}}" ], "path": [ "children", "1", "detections", "1" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Perkembangan",
+					"item": [
+						{
+							"name": "Lihat Evaluasi Perkembangan (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/children/1/perkembangan", "host": [ "{{base_url}}" ], "path": [ "children", "1", "perkembangan" ] }
+							}
+						},
+						{
+							"name": "Input Pencapaian Perkembangan (POST)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "POST",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"tahapan_perkembangan_id\": 1,\n  \"tanggal_pencapaian\": \"2024-01-01\",\n  \"catatan\": \"Bisa berguling\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/children/1/perkembangan", "host": [ "{{base_url}}" ], "path": [ "children", "1", "perkembangan" ] }
+							}
+						},
+						{
+							"name": "Update Pencapaian (PUT)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "PUT",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"tanggal_pencapaian\": \"2024-02-01\",\n  \"catatan\": \"Berguling lebih lancar\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/children/1/perkembangan/1", "host": [ "{{base_url}}" ], "path": [ "children", "1", "perkembangan", "1" ] }
+							}
+						},
+						{
+							"name": "Hapus Pencapaian (DELETE)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "DELETE",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/children/1/perkembangan/1", "host": [ "{{base_url}}" ], "path": [ "children", "1", "perkembangan", "1" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Artikel",
+					"item": [
+						{
+							"name": "Lihat Daftar Artikel",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/artikel", "host": [ "{{base_url}}" ], "path": [ "artikel" ] }
+							}
+						},
+						{
+							"name": "Detail Artikel",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/artikel/1", "host": [ "{{base_url}}" ], "path": [ "artikel", "1" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Nutrisi / Gizi",
+					"item": [
+						{
+							"name": "Lihat Daftar Rekomendasi Gizi",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/nutrition", "host": [ "{{base_url}}" ], "path": [ "nutrition" ] }
+							}
+						},
+						{
+							"name": "Detail Nutrisi",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/nutrition/1", "host": [ "{{base_url}}" ], "path": [ "nutrition", "1" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Master Data Tahapan Umur (Public)",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+						"method": "GET",
+						"header": [ { "key": "Accept", "value": "application/json" } ],
+						"url": { "raw": "{{base_url}}/tahapan-master", "host": [ "{{base_url}}" ], "path": [ "tahapan-master" ] }
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Kader Posyandu & Admin",
+			"item": [
+				{
+					"name": "Dashboard Admin",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+						"method": "GET",
+						"header": [ { "key": "Accept", "value": "application/json" } ],
+						"url": { "raw": "{{base_url}}/admin/dashboard", "host": [ "{{base_url}}" ], "path": [ "admin", "dashboard" ] }
+					}
+				},
+				{
+					"name": "SKDN Target",
+					"item": [
+						{
+							"name": "Lihat Target SKDN (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": {
+									"raw": "{{base_url}}/skdn-target?month=January&year=2024",
+									"host": [ "{{base_url}}" ],
+									"path": [ "skdn-target" ],
+									"query": [
+										{ "key": "month", "value": "January" },
+										{ "key": "year", "value": "2024" }
+									]
+								}
+							}
+						},
+						{
+							"name": "Input Target SKDN (POST)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "POST",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"month\": \"January\",\n  \"year\": \"2024\",\n  \"s_value\": 100\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/skdn-target", "host": [ "{{base_url}}" ], "path": [ "skdn-target" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Data Anak Warga",
+					"item": [
+						{
+							"name": "Lihat Semua Data Anak Warga (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/children", "host": [ "{{base_url}}" ], "path": [ "admin", "children" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Deteksi KMS Warga",
+					"item": [
+						{
+							"name": "Lihat Semua Deteksi KMS Warga (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/detections", "host": [ "{{base_url}}" ], "path": [ "admin", "detections" ] }
+							}
+						},
+						{
+							"name": "Input Deteksi KMS Warga (POST)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "POST",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"child_id\": 1,\n  \"umur\": 12,\n  \"jenis_kelamin\": \"L\",\n  \"berat_badan\": 8.5,\n  \"tinggi_badan\": 75.0\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/detections", "host": [ "{{base_url}}" ], "path": [ "admin", "detections" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Perkembangan Warga",
+					"item": [
+						{
+							"name": "Lihat Perkembangan Warga (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/children/1/perkembangan", "host": [ "{{base_url}}" ], "path": [ "admin", "children", "1", "perkembangan" ] }
+							}
+						},
+						{
+							"name": "Input Perkembangan Warga (POST)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "POST",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"tahapan_perkembangan_id\": 1,\n  \"tanggal_pencapaian\": \"2024-01-01\",\n  \"catatan\": \"Input by Kader\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/children/1/perkembangan", "host": [ "{{base_url}}" ], "path": [ "admin", "children", "1", "perkembangan" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Cetak Laporan (PDF)",
+					"item": [
+						{
+							"name": "Cetak Laporan KMS (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/children/1/detections/pdf", "host": [ "{{base_url}}" ], "path": [ "admin", "children", "1", "detections", "pdf" ] }
+							}
+						},
+						{
+							"name": "Cetak Laporan Tumbuh Kembang (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/children/1/perkembangan/pdf", "host": [ "{{base_url}}" ], "path": [ "admin", "children", "1", "perkembangan", "pdf" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Kelola Artikel",
+					"item": [
+						{
+							"name": "Lihat Daftar Artikel (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/artikel", "host": [ "{{base_url}}" ], "path": [ "admin", "artikel" ] }
+							}
+						},
+						{
+							"name": "Tambah Artikel Baru (POST)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "POST",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Pentingnya Gizi Seimbang\",\n  \"content\": \"Gizi seimbang sangat penting untuk balita...\",\n  \"kategori_id\": 1\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/artikel", "host": [ "{{base_url}}" ], "path": [ "admin", "artikel" ] }
+							}
+						},
+						{
+							"name": "Update Artikel (PUT)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "PUT",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Pentingnya Gizi Seimbang (Update)\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/artikel/1", "host": [ "{{base_url}}" ], "path": [ "admin", "artikel", "1" ] }
+							}
+						},
+						{
+							"name": "Hapus Artikel (DELETE)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "DELETE",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/artikel/1", "host": [ "{{base_url}}" ], "path": [ "admin", "artikel", "1" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Kelola Kategori Artikel",
+					"item": [
+						{
+							"name": "Lihat Daftar Kategori (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/kategori", "host": [ "{{base_url}}" ], "path": [ "admin", "kategori" ] }
+							}
+						},
+						{
+							"name": "Tambah Kategori Baru (POST)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "POST",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nama\": \"Kesehatan Anak\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/kategori", "host": [ "{{base_url}}" ], "path": [ "admin", "kategori" ] }
+							}
+						},
+						{
+							"name": "Update Kategori (PUT)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "PUT",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nama\": \"Gizi & Kesehatan Anak\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/kategori/1", "host": [ "{{base_url}}" ], "path": [ "admin", "kategori", "1" ] }
+							}
+						},
+						{
+							"name": "Hapus Kategori (DELETE)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "DELETE",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/kategori/1", "host": [ "{{base_url}}" ], "path": [ "admin", "kategori", "1" ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Kelola Nutrisi / Gizi",
+					"item": [
+						{
+							"name": "Lihat Daftar Nutrisi (GET)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "GET",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/nutrition", "host": [ "{{base_url}}" ], "path": [ "admin", "nutrition" ] }
+							}
+						},
+						{
+							"name": "Tambah Nutrisi Baru (POST)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "POST",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Resep Bubur Kacang Hijau\",\n  \"description\": \"Baik untuk pencernaan dan pertumbuhan\",\n  \"category\": \"snack\",\n  \"min_age_months\": 6,\n  \"max_age_months\": 24\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/nutrition", "host": [ "{{base_url}}" ], "path": [ "admin", "nutrition" ] }
+							}
+						},
+						{
+							"name": "Update Nutrisi (PUT)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "PUT",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Resep Bubur Kacang Hijau (Update)\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/nutrition/1", "host": [ "{{base_url}}" ], "path": [ "admin", "nutrition", "1" ] }
+							}
+						},
+						{
+							"name": "Hapus Nutrisi (DELETE)",
+							"request": {
+								"auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{bearer_token}}", "type": "string" } ] },
+								"method": "DELETE",
+								"header": [ { "key": "Accept", "value": "application/json" } ],
+								"url": { "raw": "{{base_url}}/admin/nutrition/1", "host": [ "{{base_url}}" ], "path": [ "admin", "nutrition", "1" ] }
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8001/api",
+			"type": "string"
+		},
+		{
+			"key": "bearer_token",
+			"value": "ISI_DENGAN_TOKEN_LOGIN_MU",
+			"type": "string"
+		}
+	]
+}

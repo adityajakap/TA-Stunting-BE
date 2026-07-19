@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\DetectionController;
 use App\Http\Controllers\Api\TahapanPerkembanganController;
 use App\Http\Controllers\Api\BmiController;
 use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\SkdnController;
+use App\Http\Controllers\Api\NtobController;
 use App\Http\Controllers\NutritionController;
 use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\ArtikelKategoriController;
@@ -71,10 +73,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/detections',                        [DetectionController::class, 'adminStore']);
         Route::get('/children/{child}/perkembangan',      [TahapanPerkembanganController::class, 'adminShow']);
         Route::post('/children/{child}/perkembangan',     [TahapanPerkembanganController::class, 'adminStore']);
+        
+        Route::get('/skdn/{month}/{year}/pdf',            [SkdnController::class, 'exportPdf']);
+        Route::get('/ntob/{month}/{year}/pdf',            [NtobController::class, 'exportPdf']);
+        
         Route::apiResource('nutrition', NutritionController::class);
         Route::apiResource('artikel', ArtikelController::class);
         Route::apiResource('kategori', ArtikelKategoriController::class);
     });
+
+    Route::get('/skdn-target', [SkdnController::class, 'getTarget']);
+    Route::post('/skdn-target', [SkdnController::class, 'storeTarget']);
 
     /*
     |--------------------------------------------------------------------------
