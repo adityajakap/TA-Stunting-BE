@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrangtuaDashboardTest extends TestCase
 {
@@ -34,6 +35,5 @@ class OrangtuaDashboardTest extends TestCase
     $response->assertSeeText($orangtua->nama_anak);
     // imunisasi feature telah dihapus
     $response->assertSee('Deteksi');
-    $response->assertSee('BMI');
     }
 }

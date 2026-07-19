@@ -78,13 +78,7 @@ class BMICalculatorController extends Controller
                 $bmi = 0;
             }
 
-        if ($gender == 'pria' || $gender == 'laki-laki') {
-            $status = $this->statusBmiPria($bmi);
-        } elseif ($gender == 'wanita' || $gender == 'perempuan') {
-            $status = $this->statusBmiWanita($bmi);
-        } else {
-            $status = "Gender tidak valid";
-        }
+        $status = \App\Services\BMICalculationService::getStatus($bmi, $gender);
 
         session(['bmi'=> number_format($bmi, 2)]);
         session(['status'=> $status]);
@@ -128,14 +122,14 @@ class BMICalculatorController extends Controller
             $bmi = 0;
         }
 
+        $status = \App\Services\BMICalculationService::getStatus($bmi, $gender);
+
+        // Perhitungan BMR
         if ($gender == 'pria' || $gender == 'laki-laki') {
-            $status = $this->statusBmiPria($bmi);
-            $bmr = 66 + (13.7 * $berat) + (5 * $tinggiCm) - (6.8 * $usia); // ⬅️ definisikan $bmr
+            $bmr = 66 + (13.7 * $berat) + (5 * $tinggiCm) - (6.8 * $usia);
         } elseif ($gender == 'wanita' || $gender == 'perempuan') {
-            $status = $this->statusBmiWanita($bmi);
-             $bmr = 655 + (9.6 * $berat) + (1.8 * $tinggiCm) - (4.7 * $usia); // ⬅️ definisikan $bmr
+            $bmr = 655 + (9.6 * $berat) + (1.8 * $tinggiCm) - (4.7 * $usia);
         } else {
-            $status = "Gender tidak valid";
             $bmr = 0;
         }
 
@@ -165,32 +159,6 @@ class BMICalculatorController extends Controller
     }
 
 
-
-    private function statusBmiPria($bmi)
-    {
-        if ($bmi < 18.5) {
-            return "Underweight";
-        } elseif ($bmi >= 18.5 && $bmi < 24.9) {
-            return "Normal";
-        } elseif ($bmi >= 25 && $bmi < 29.9) {
-            return "Overweight";
-        } else {
-            return "Obese";
-        }
-    }
-
-    private function statusBmiWanita($bmi)
-    {
-        if ($bmi < 17.5) {
-            return "Underweight";
-        } elseif ($bmi >= 17.5 && $bmi < 23.9) {
-            return "Normal";
-        } elseif ($bmi >= 24 && $bmi < 28.9) {
-            return "Overweight";
-        } else {
-            return "Obese";
-        }
-    }
 
     public function deleteRow($id)
 {

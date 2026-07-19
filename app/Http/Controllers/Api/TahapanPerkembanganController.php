@@ -155,4 +155,45 @@ class TahapanPerkembanganController extends Controller
 
         return response()->json($data, 201);
     }
+
+    /**
+     * Export PDF laporan perkembangan anak.
+     */
+    public function exportPdf(Request $request, $childId)
+    {
+        // Authorization check: strictly for admin/kader
+        $user = $request->user();
+        if (!in_array($user->role, ['admin', 'kader'])) {
+            return response()->json(['message' => 'Unauthorized. Fitur cetak hanya untuk admin/kader.'], 403);
+        }
+
+        $child = \App\Models\Child::findOrFail($childId);
+
+        $tahapanMaster = TahapanPerkembangan::orderBy('kategori')->orderBy('umur_minimal_bulan')->get();
+        $achievedData  = TahapanPerkembanganData::where('child_id', $childId)->get()->keyBy('tahapan_perkembangan_id');
+
+        $data = $tahapanMaster->map(function ($tahapan) use ($child, $achievedData) {
+            $achieved = $achievedData->get($tahapan->id);
+            if (!$achieved) {
+                return null;
+            }
+
+            $tanggal_pencapaian = $achieved->tanggal_pencapaian;
+            $statusDetail = DevelopmentStatusService::evaluate($child, $tahapan, $tanggal_pencapaian);
+
+            return (object) [
+                'tahapan'       => $tahapan,
+                'achieved_data' => $achieved,
+                'status_detail' => $statusDetail,
+            ];
+        })->filter();
+
+        // Group by kategori
+        $groupedData = $data->groupBy(function ($item) {
+            return $item->tahapan->kategori;
+        });
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.perkembangan', compact('child', 'groupedData'));
+        return $pdf->download('Laporan_Perkembangan_' . str_replace(' ', '_', $child->nama_lengkap_anak) . '.pdf');
+    }
 }

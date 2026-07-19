@@ -69,7 +69,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/children',                           [AdminController::class, 'children']);
         Route::get('/detections',                         [DetectionController::class, 'adminIndex']);
         Route::post('/detections',                        [DetectionController::class, 'adminStore']);
+        Route::get('/children/{child}/detections/pdf',    [DetectionController::class, 'exportPdf']);
         Route::get('/children/{child}/perkembangan',      [TahapanPerkembanganController::class, 'adminShow']);
+        Route::get('/children/{child}/perkembangan/pdf',  [TahapanPerkembanganController::class, 'exportPdf']);
         Route::post('/children/{child}/perkembangan',     [TahapanPerkembanganController::class, 'adminStore']);
         Route::apiResource('nutrition', NutritionController::class);
         Route::apiResource('artikel', ArtikelController::class);

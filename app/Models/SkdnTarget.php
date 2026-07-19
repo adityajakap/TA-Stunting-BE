@@ -15,4 +15,8 @@ class SkdnTarget extends Model
         'year',
         's_value'
     ];
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ccd89a1fced35046f85d2cb1c2c6c394b5cfafcf

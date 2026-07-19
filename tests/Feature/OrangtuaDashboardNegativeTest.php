@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrangtuaDashboardNegativeTest extends TestCase
 {
